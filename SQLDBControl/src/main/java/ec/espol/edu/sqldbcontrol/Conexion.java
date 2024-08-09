@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -30,9 +32,9 @@ public class Conexion {
         try {
             Class.forName(driver);
             cx = DriverManager.getConnection(url + bd, user, password);
-            System.out.println("Se conectó a BD" + bd);
+            System.out.println("Se conectó correctamente a la BD " + bd);
         } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("No se conectó a BD" + bd);
+            System.out.println("No se conectó a BD " + bd);
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
         return cx;

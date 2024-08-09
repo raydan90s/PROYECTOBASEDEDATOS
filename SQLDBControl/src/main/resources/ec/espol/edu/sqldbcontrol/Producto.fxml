@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.ProductosController">
+   <children>
+      <Text fx:id="volver" fill="#2b00ff" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volver" underline="true" />
+      <TableView fx:id="productoTable" layoutX="60.0" layoutY="109.0" prefHeight="300.0" prefWidth="526.0">
+        <columns>
+          <TableColumn fx:id="codigounicocolumn" prefWidth="75.0" text="Código único" />
+          <TableColumn fx:id="nombrecolumn" prefWidth="75.0" text="Nombre" />
+          <TableColumn fx:id="cantidadcolumn" prefWidth="75.0" text="Cantidad Disponible" />
+          <TableColumn fx:id="fechaproduccioncolumn" prefWidth="75.0" text="Fecha Producción" />
+          <TableColumn fx:id="preciocolumn" prefWidth="75.0" text="Precio" />
+          <TableColumn fx:id="recetacolumn" prefWidth="75.0" text="Receta" />
+          <TableColumn fx:id="nombrecocinero" prefWidth="75.0" text="Creado Por" />
+            
+            
+        </columns>
+      </TableView>
+      <Label layoutX="256.0" layoutY="58.0" text="PRODUCTOS">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

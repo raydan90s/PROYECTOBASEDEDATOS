@@ -25,6 +25,11 @@ public class Empleado {
         this.nombreSucursal = nombreSucursal;
         this.tipoEmpleado = tipoEmpleado;
     }
+    
+    public Empleado(String nombreEmpleado, String apellidoEmpleado) {
+        this.nombreEmpleado = nombreEmpleado;
+        this.apellidoEmpleado = apellidoEmpleado;
+    }
 
     // Getters y setters
     public String getNombreEmpleado() {
@@ -49,5 +54,9 @@ public class Empleado {
 
     public String getTipoEmpleado() {
         return tipoEmpleado;
+    }
+    
+    public String getNombreCompleto() {
+        return nombreEmpleado + " " + apellidoEmpleado;
     }
 }
