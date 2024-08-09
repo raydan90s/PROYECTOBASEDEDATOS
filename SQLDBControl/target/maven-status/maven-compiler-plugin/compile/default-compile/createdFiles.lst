@@ -1,7 +1,9 @@
+ec\espol\edu\sqldbcontrol\Permiso.class
 ec\espol\edu\sqldbcontrol\Productos.class
 ec\espol\edu\sqldbcontrol\EmpleadosController.class
 ec\espol\edu\sqldbcontrol\ProductosController.class
 ec\espol\edu\sqldbcontrol\Empleado.class
+ec\espol\edu\sqldbcontrol\PermisosController.class
 ec\espol\edu\sqldbcontrol\ClienteController.class
 ec\espol\edu\sqldbcontrol\Conexion.class
 ec\espol\edu\sqldbcontrol\App.class

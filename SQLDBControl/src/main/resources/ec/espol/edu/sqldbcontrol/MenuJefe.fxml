@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -7,7 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.MenuJefeController">
+<AnchorPane id="AnchorPane" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.MenuJefeController">
    <children>
       <Button fx:id="MostrarEmpleados" layoutX="226.0" layoutY="107.0" mnemonicParsing="false" text="Mostrar Empleados">
          <font>
@@ -55,5 +61,16 @@
             <Font name="Candara Light" size="30.0" />
          </font>
       </Label>
+      <Button fx:id="MostrarPermisos" layoutX="229.0" layoutY="291.0" mnemonicParsing="false" onMouseClicked="#mostrarpermisos" prefHeight="31.0" prefWidth="149.0" text="Mostrar Permisos">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font name="Lato Light" size="15.0" />
+         </font>
+         <opaqueInsets>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </opaqueInsets>
+      </Button>
    </children>
 </AnchorPane>
