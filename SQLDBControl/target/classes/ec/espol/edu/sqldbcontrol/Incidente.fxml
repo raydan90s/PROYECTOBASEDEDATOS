@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.IncidenteController">
+   <children>
+      <Label layoutX="256.0" layoutY="58.0" text="INCIDENTES">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="incidentesTable" layoutX="60.0" layoutY="109.0" prefHeight="300.0" prefWidth="526.0">
+        <columns>
+          <TableColumn fx:id="idIncidenteColumn" prefWidth="50.0" text="ID" />
+          <TableColumn fx:id="accionTomadaColumn" prefWidth="150.0" text="Acción Tomada" />
+          <TableColumn fx:id="descripcionColumn" prefWidth="200.0" text="Descripción" />
+          <TableColumn fx:id="fechaIncidenteColumn" prefWidth="100.0" text="Fecha" />
+          <TableColumn fx:id="idJefeColumn" prefWidth="50.0" text="ID Jefe" />
+          <TableColumn fx:id="idEmpleadoColumn" prefWidth="50.0" text="ID Empleado" />
+        </columns>
+      </TableView>
+      <Button layoutX="60.0" layoutY="420.0" mnemonicParsing="false" text="Agregar" onAction="#abrirAgregarIncidente"/>
+      <Button layoutX="140.0" layoutY="420.0" mnemonicParsing="false" text="Modificar" onAction="#abrirModificarIncidente"/>
+      <Button layoutX="220.0" layoutY="420.0" mnemonicParsing="false" text="Eliminar" onAction="#eliminarIncidente"/>
+   </children>
+</AnchorPane>
+

@@ -27,6 +27,10 @@ public class MenuJefeController implements Initializable {
     private Button MostrarEmpleados;
     @FXML
     private Button MostrarInventario;
+    @FXML
+    private Button MostrarProveedor;
+    @FXML
+    private Button MostrarIncidente;
 
     /**
      * Initializes the controller class.
@@ -36,6 +40,20 @@ public class MenuJefeController implements Initializable {
         MostrarEmpleados.setOnMouseClicked(event -> {
             try {
                 MostrarEmpleados(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        MostrarIncidente.setOnMouseClicked(event -> {
+            try {
+                MostrarIncidente(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        MostrarProveedor.setOnMouseClicked(event -> {
+            try {
+                MostrarProveedores(event);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -55,5 +73,11 @@ public class MenuJefeController implements Initializable {
 
     void MostrarInventario(MouseEvent event) throws IOException {
         App.setRoot("Inventario");
+    }
+    void MostrarProveedores(MouseEvent event) throws IOException {
+        App.setRoot("Proveedor");
+    }
+    void MostrarIncidente(MouseEvent event) throws IOException {
+        App.setRoot("Incidente");
     }
 }

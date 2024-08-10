@@ -6,10 +6,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="ec.espol.edu.sqldbcontrol.MenuJefeController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.MenuJefeController">
    <children>
-      <Button fx:id="MostrarEmpleados" layoutX="226.0" layoutY="151.0" mnemonicParsing="false" text="Mostrar Empleados">
+      <Button fx:id="MostrarEmpleados" layoutX="227.0" layoutY="108.0" mnemonicParsing="false" text="Mostrar Empleados">
          <font>
             <Font name="Lato Light" size="15.0" />
          </font>
@@ -17,7 +16,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button fx:id="MostrarInventario" layoutX="229.0" layoutY="214.0" mnemonicParsing="false" text="Mostrar Inventario">
+      <Button fx:id="MostrarInventario" layoutX="229.0" layoutY="169.0" mnemonicParsing="false" text="Mostrar Inventario">
          <font>
             <Font name="Lato Light" size="15.0" />
          </font>
@@ -30,5 +29,21 @@
             <Font name="Candara Light" size="30.0" />
          </font>
       </Label>
+      <Button fx:id="MostrarProveedor" layoutX="222.0" layoutY="235.0" mnemonicParsing="false" text="Mostrar Proveedores">
+         <font>
+            <Font name="Lato Light" size="15.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="MostrarIncidente" layoutX="228.0" layoutY="293.0" mnemonicParsing="false" text="Mostrar Incidentes">
+         <font>
+            <Font name="Lato Light" size="15.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>
