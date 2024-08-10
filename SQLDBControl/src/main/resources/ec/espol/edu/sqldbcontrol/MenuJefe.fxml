@@ -15,7 +15,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.MenuJefeController">
    <children>
-      <Button fx:id="MostrarEmpleados" layoutX="226.0" layoutY="107.0" mnemonicParsing="false" text="Mostrar Empleados">
+      <Button fx:id="MostrarEmpleados" layoutX="302.0" layoutY="110.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="161.0" text="Mostrar Empleados">
          <font>
             <Font name="Lato Light" size="15.0" />
          </font>
@@ -23,19 +23,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button fx:id="MostrarInventario" layoutX="229.0" layoutY="246.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="149.0" text="Mostrar Inventario">
-         <font>
-            <Font name="Lato Light" size="15.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-         <opaqueInsets>
-            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-         </opaqueInsets>
-      </Button>
-      
-      <Button fx:id="MostrarProductos" layoutX="229.0" layoutY="200.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Mostrar Productos">
+      <Button fx:id="MostrarInventario" layoutX="305.0" layoutY="249.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="161.0" text="Mostrar Inventario">
          <font>
             <Font name="Lato Light" size="15.0" />
          </font>
@@ -47,7 +35,19 @@
          </opaqueInsets>
       </Button>
       
-      <Button fx:id="MostrarCliente" layoutX="227.0" layoutY="153.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="148.0" text="Mostrar Cliente">
+      <Button fx:id="MostrarProductos" layoutX="305.0" layoutY="203.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="161.0" text="Mostrar Productos">
+         <font>
+            <Font name="Lato Light" size="15.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <opaqueInsets>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </opaqueInsets>
+      </Button>
+      
+      <Button fx:id="MostrarCliente" layoutX="303.0" layoutY="156.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="161.0" text="Mostrar Cliente">
          <font>
             <Font name="Lato Light" size="15.0" />
          </font>
@@ -56,12 +56,12 @@
          </cursor>
       </Button>
  
-      <Label layoutX="226.0" layoutY="45.0" text="MENÚ JEFE">
+      <Label layoutX="302.0" layoutY="48.0" text="MENÚ JEFE">
          <font>
             <Font name="Candara Light" size="30.0" />
          </font>
       </Label>
-      <Button fx:id="MostrarPermisos" layoutX="229.0" layoutY="291.0" mnemonicParsing="false" onMouseClicked="#mostrarpermisos" prefHeight="31.0" prefWidth="149.0" text="Mostrar Permisos">
+      <Button fx:id="MostrarPermisos" layoutX="305.0" layoutY="294.0" mnemonicParsing="false" onMouseClicked="#mostrarpermisos" prefHeight="31.0" prefWidth="161.0" text="Mostrar Permisos">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
@@ -72,7 +72,18 @@
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
          </opaqueInsets>
       </Button>
-      <Button fx:id="mostrarSucursal" layoutX="229.0" layoutY="340.0" mnemonicParsing="false" onMouseClicked="#mostrarsucursal" prefHeight="31.0" prefWidth="149.0" text="Mostrar Sucursal">
+      <Button fx:id="mostrarSucursal" layoutX="303.0" layoutY="342.0" mnemonicParsing="false" onMouseClicked="#mostrarsucursal" prefHeight="31.0" prefWidth="161.0" text="Mostrar Sucursal">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font name="Lato Light" size="15.0" />
+         </font>
+         <opaqueInsets>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </opaqueInsets>
+      </Button>
+      <Button fx:id="mostrarSucursal1" layoutX="305.0" layoutY="387.0" mnemonicParsing="false" onMouseClicked="#mostrarsatisfaccion" prefHeight="31.0" prefWidth="161.0" text="Mostrar Satisfaccion">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

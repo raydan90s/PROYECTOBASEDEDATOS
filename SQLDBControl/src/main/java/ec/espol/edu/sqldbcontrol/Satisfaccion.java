@@ -82,7 +82,7 @@ public class Satisfaccion {
         return fechaEvaluacion;
     }
 
-    public void setFechaEvaluacion(LocalDate fechaEvaluacion) {
+    public void setFechaEvaluacion(Date fechaEvaluacion) {
         this.fechaEvaluacion = fechaEvaluacion;
     }
     

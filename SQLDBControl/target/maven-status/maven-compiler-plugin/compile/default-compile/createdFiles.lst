@@ -7,6 +7,7 @@ module-info.class
 ec\espol\edu\sqldbcontrol\Cliente.class
 ec\espol\edu\sqldbcontrol\MateriaPrima.class
 ec\espol\edu\sqldbcontrol\PrimaryController.class
+ec\espol\edu\sqldbcontrol\Satisfaccion.class
 ec\espol\edu\sqldbcontrol\InventarioController.class
 ec\espol\edu\sqldbcontrol\EmpleadosController.class
 ec\espol\edu\sqldbcontrol\ProductosController.class
@@ -14,5 +15,6 @@ ec\espol\edu\sqldbcontrol\Empleado.class
 ec\espol\edu\sqldbcontrol\PermisosController.class
 ec\espol\edu\sqldbcontrol\Sucursal.class
 ec\espol\edu\sqldbcontrol\Conexion.class
+ec\espol\edu\sqldbcontrol\SatisfaccionController.class
 ec\espol\edu\sqldbcontrol\MenuJefeController.class
 ec\espol\edu\sqldbcontrol\SecondaryController.class
