@@ -105,5 +105,10 @@
             <Font name="Serif Regular" size="14.0" />
          </font>
       </Text>
+      <Text fx:id="avisotexto" layoutX="153.0" layoutY="408.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selecciones un elemento de la tabla para editar" wrappingWidth="364.486328125">
+         <font>
+            <Font name="Serif Regular" size="18.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

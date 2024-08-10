@@ -84,13 +84,16 @@ public class PermisosController implements Initializable {
     private TextField id_Jefe;
     @FXML
     private Text codeJefe;
-    
+    @FXML
+    private Text avisotexto;
+    private Permiso permisoSeleccionado = null;
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        avisotexto.setVisible(false);
         mostrarIcono(false);
         volver.setOnMouseClicked(event -> {
             try {
@@ -143,71 +146,144 @@ public class PermisosController implements Initializable {
         }
         tablePermiso.setItems(permisosList);
     }
+    
     @FXML
     private void seleccion(MouseEvent event) {
-        
-        Permiso permisoSeleccionado = tablePermiso.getSelectionModel().getSelectedItem();
+        limpiar();
+        permisoSeleccionado = tablePermiso.getSelectionModel().getSelectedItem();
         if (permisoSeleccionado != null) {
             id_empleado.setText(String.valueOf(permisoSeleccionado.getIdEmpleado()));
             tipo.setText(permisoSeleccionado.getTipo());
             fecha_inicio.setValue(permisoSeleccionado.getFechaInicio().toLocalDate());
             fechafin.setValue(permisoSeleccionado.getFechaFin().toLocalDate());
             id_Jefe.setText(String.valueOf(permisoSeleccionado.getIdJefe()));
+            avisotexto.setVisible(false);
         }
     }
 
     @FXML
     private void agregar(MouseEvent event) {
+        limpiar();
         mostrarIcono(true);
-        
+        permisoSeleccionado = null;
     }
 
     @FXML
     private void editar(MouseEvent event) {
-        mostrarIcono(true);
+        permisoSeleccionado = tablePermiso.getSelectionModel().getSelectedItem();
+        if (permisoSeleccionado != null) {
+            avisotexto.setVisible(true);
+            habilitarcampos(false);
+            mostrarIcono(true);
+            tipo.setText(permisoSeleccionado.getTipo());
+            id_empleado.setText(String.valueOf(permisoSeleccionado.getIdEmpleado()));
+            fecha_inicio.setValue(permisoSeleccionado.getFechaInicio().toLocalDate());
+            fechafin.setValue(permisoSeleccionado.getFechaFin().toLocalDate());
+            id_Jefe.setText(String.valueOf(permisoSeleccionado.getIdJefe()));
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione un permiso para editar.");
+        }
     }
 
     @FXML
     private void borrar(MouseEvent event) {
+        Permiso permisoABorrar = tablePermiso.getSelectionModel().getSelectedItem();
+        if (permisoABorrar == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione un permiso para eliminar.");
+            return;
+        }
+
+        int confirmacion = JOptionPane.showConfirmDialog(null, 
+        "¿Está seguro de que desea eliminar este permiso?", 
+        "Confirmar eliminación", 
+        JOptionPane.YES_NO_OPTION);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            String sql = "DELETE FROM Permiso WHERE idPermiso = ?";
+
+            try (Connection conn = Conexion.conectar();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+                ps.setInt(1, permisoABorrar.getIdPermiso());
+            
+                int filasAfectadas = ps.executeUpdate();
+            
+                if (filasAfectadas > 0) {
+                    permisosList.remove(permisoABorrar);
+                    tablePermiso.refresh();
+                    JOptionPane.showMessageDialog(null, "El permiso ha sido eliminado exitosamente.");
+                    limpiar();
+                    mostrarIcono(false);
+                    permisoSeleccionado = null;
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se pudo eliminar el permiso.");
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al eliminar el permiso: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
     private void guardar(MouseEvent event) {
+        boolean esNuevo = permisoSeleccionado == null;
         String tipot = tipo.getText();
         Date fechaInicio = Date.valueOf(fecha_inicio.getValue());
         Date fechfin = Date.valueOf(fechafin.getValue());
         int codigo = Integer.parseInt( id_empleado.getText());
         int id_jefe = Integer.parseInt(id_Jefe.getText());
-        String sql = "INSERT INTO Permiso ( fechaInicio, fechaFin, tipo, idEmpleado, idJefe) VALUES (?, ?, ?,?,?)";
+        String sql;
+        if (!esNuevo) {
+        sql = "UPDATE Permiso SET fechaInicio = ?, fechaFin = ?, tipo = ?, idEmpleado = ?, idJefe = ? WHERE idPermiso = ?";
+    } else {
+        sql = "INSERT INTO Permiso (fechaInicio, fechaFin, tipo, idEmpleado, idJefe) VALUES (?, ?, ?, ?, ?)";
+    }
+
+    try (Connection conn = Conexion.conectar();
+         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
         
-        try{
-            PreparedStatement ps = Conexion.conectar().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);  
-            ps.setDate(1, fechaInicio);
-            ps.setDate(2, fechfin);
-            ps.setString(3, tipot);
-            ps.setInt(4, codigo);
-            ps.setInt(5, id_jefe);
-            
-            ps.executeUpdate();
-                        
-            ResultSet generatedKeys = ps.getGeneratedKeys();
-            int idPermiso = 0;
-            
-            if (generatedKeys.next()) {
-            idPermiso = generatedKeys.getInt(1);
+        ps.setDate(1, fechaInicio);
+        ps.setDate(2, fechfin);
+        ps.setString(3, tipot);
+        ps.setInt(4, codigo);
+        ps.setInt(5, id_jefe);
+        
+        if (!esNuevo) {
+            ps.setInt(6, permisoSeleccionado.getIdPermiso());
         }
-        
-            // Crear el nuevo cliente con el ID recuperado
-            Permiso nuevoPermiso = new Permiso( idPermiso, tipot, fechfin, fechaInicio, codigo, id_jefe);
-        
-            // Añadir el nuevo cliente a la lista observable
-            permisosList.add(nuevoPermiso);
-            
+
+        int affectedRows = ps.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("La operación falló, no se afectaron filas.");
+        }
+
+        if (esNuevo) {
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int idPermiso = generatedKeys.getInt(1);
+                    Permiso nuevoPermiso = new Permiso(idPermiso, tipot, fechfin, fechaInicio, codigo, "", id_jefe);
+                    permisosList.add(nuevoPermiso);
+                } else {
+                    throw new SQLException("No se pudo obtener el ID del nuevo permiso.");
+                }
+            }
+        } else {
+            permisoSeleccionado.setTipo(tipot);
+            permisoSeleccionado.setFechaInicio(fechaInicio);
+            permisoSeleccionado.setFechaFin(fechfin);
+            permisoSeleccionado.setIdEmpleado(codigo);
+            permisoSeleccionado.setIdJefe(id_jefe);
+            tablePermiso.refresh();
+        }
             JOptionPane.showMessageDialog(null, "Se insertó correctamente el Permiso");
             limpiar();
+            mostrarIcono(false);
+            recargarTabla();
         } catch(Exception e){
             JOptionPane.showMessageDialog(null, "No se insertó correctamente el Cliente " + e.toString());
-        }
+        } 
     }
     
     void volverLink(MouseEvent event) throws IOException {
@@ -215,7 +291,6 @@ public class PermisosController implements Initializable {
     }
     
     void mostrarIcono(boolean valor){
-        tipo.setVisible(valor);
         id_empleado.setVisible(valor);
         fecha_inicio.setVisible(valor);
         fechafin.setVisible(valor);
@@ -234,9 +309,23 @@ public class PermisosController implements Initializable {
         fecha_inicio.setValue(null);
         fechafin.setValue(null);
         id_Jefe.clear();
-   
-
     }
 
-    
+    void habilitarcampos(boolean valor){
+        tipo.setDisable(valor);
+        id_empleado.setDisable(valor);
+        fecha_inicio.setDisable(valor);
+        fechafin.setDisable(valor);
+        id_Jefe.setDisable(valor);
+    }
+    private void recargarTabla() {
+        permisosList.clear(); // Limpia la lista observable
+        tablePermiso.getItems().clear(); // Limpia la tabla
+        try {
+            loadPermisos(); // Recarga los permisos desde la base de datos
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al recargar los permisos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

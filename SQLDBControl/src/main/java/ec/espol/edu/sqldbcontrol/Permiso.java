@@ -75,7 +75,7 @@ public class Permiso {
         this.idJefe = idJefe;
     }
 
-    public Permiso(int idPermiso, String tipo, Date fechaFin, Date fechaInicio, int idEmpleado,String Nombre) {
+    public Permiso(int idPermiso, String tipo, Date fechaInicio, Date fechaFin, int idEmpleado,String Nombre) {
         this.idPermiso = idPermiso;
         this.fechaFin = fechaFin;
         this.fechaInicio = fechaInicio;
@@ -84,7 +84,7 @@ public class Permiso {
         this.nombreEmpleado = Nombre;
     }
 
-    public Permiso(int idPermiso,String tipo, Date fechaFin, Date fechaInicio, int idEmpleado, int idJefe) {
+    public Permiso(int idPermiso,String tipo, Date fechaInicio, Date fechafin, int idEmpleado, int idJefe) {
         this.idPermiso = idPermiso;
         this.fechaFin = fechaFin;
         this.fechaInicio = fechaInicio;
