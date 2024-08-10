@@ -33,6 +33,8 @@ public class MenuJefeController implements Initializable {
     private Button MostrarCliente;
     @FXML
     private Button MostrarPermisos;
+    @FXML
+    private Button mostrarSucursal;
 
 
     
@@ -94,5 +96,10 @@ public class MenuJefeController implements Initializable {
     @FXML
     private void mostrarpermisos(MouseEvent event) throws IOException {
         App.setRoot("Permisos");
+    }
+
+    @FXML
+    private void mostrarsucursal(MouseEvent event) throws IOException {
+        App.setRoot("Sucursal");
     }
 }

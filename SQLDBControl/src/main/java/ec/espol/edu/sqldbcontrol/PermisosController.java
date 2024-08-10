@@ -85,7 +85,6 @@ public class PermisosController implements Initializable {
     @FXML
     private Text codeJefe;
     @FXML
-    private Text avisotexto;
     private Permiso permisoSeleccionado = null;
     
     /**
@@ -93,7 +92,6 @@ public class PermisosController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        avisotexto.setVisible(false);
         mostrarIcono(false);
         volver.setOnMouseClicked(event -> {
             try {
@@ -157,7 +155,6 @@ public class PermisosController implements Initializable {
             fecha_inicio.setValue(permisoSeleccionado.getFechaInicio().toLocalDate());
             fechafin.setValue(permisoSeleccionado.getFechaFin().toLocalDate());
             id_Jefe.setText(String.valueOf(permisoSeleccionado.getIdJefe()));
-            avisotexto.setVisible(false);
         }
     }
 
@@ -172,7 +169,6 @@ public class PermisosController implements Initializable {
     private void editar(MouseEvent event) {
         permisoSeleccionado = tablePermiso.getSelectionModel().getSelectedItem();
         if (permisoSeleccionado != null) {
-            avisotexto.setVisible(true);
             habilitarcampos(false);
             mostrarIcono(true);
             tipo.setText(permisoSeleccionado.getTipo());
@@ -282,7 +278,7 @@ public class PermisosController implements Initializable {
             mostrarIcono(false);
             recargarTabla();
         } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "No se insertó correctamente el Cliente " + e.toString());
+            JOptionPane.showMessageDialog(null, "No se insertó correctamente el permiso " + e.toString());
         } 
     }
     
@@ -291,6 +287,7 @@ public class PermisosController implements Initializable {
     }
     
     void mostrarIcono(boolean valor){
+        tipo.setVisible(valor);
         id_empleado.setVisible(valor);
         fecha_inicio.setVisible(valor);
         fechafin.setVisible(valor);
