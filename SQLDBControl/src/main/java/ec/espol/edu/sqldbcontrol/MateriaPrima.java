@@ -16,13 +16,39 @@ public class MateriaPrima {
     private Date fechaCaducidad;
     private Date fechaElaboracion;
     private int cantidad;
+    private Proveedor proveedor;
 
-    public MateriaPrima(int idMateria, String nombreMateria, Date fechaCaducidad, Date fechaElaboracion, int cantidad) {
+    public MateriaPrima(int idMateria, String nombreMateria, Date fechaCaducidad, Date fechaElaboracion, int cantidad, Proveedor proveedor) {
         this.idMateria = idMateria;
         this.nombreMateria = nombreMateria;
         this.fechaCaducidad = fechaCaducidad;
         this.fechaElaboracion = fechaElaboracion;
         this.cantidad = cantidad;
+        this.proveedor = proveedor;
+    }
+
+    public void setIdMateria(int idMateria) {
+        this.idMateria = idMateria;
+    }
+
+    public void setNombreMateria(String nombreMateria) {
+        this.nombreMateria = nombreMateria;
+    }
+
+    public void setFechaCaducidad(Date fechaCaducidad) {
+        this.fechaCaducidad = fechaCaducidad;
+    }
+
+    public void setFechaElaboracion(Date fechaElaboracion) {
+        this.fechaElaboracion = fechaElaboracion;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
     }
 
     public int getIdMateria() {
@@ -44,4 +70,9 @@ public class MateriaPrima {
     public int getCantidad() {
         return cantidad;
     }
+    
+    public String getNombreProveedor() {
+        return proveedor != null ? proveedor.getNombreCompleto() : "";
+    }
+
 }

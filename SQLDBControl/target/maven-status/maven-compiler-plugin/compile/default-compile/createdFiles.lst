@@ -7,6 +7,7 @@ ec\espol\edu\sqldbcontrol\Conexion.class
 ec\espol\edu\sqldbcontrol\App.class
 ec\espol\edu\sqldbcontrol\MenuJefeController.class
 module-info.class
+ec\espol\edu\sqldbcontrol\Proveedor.class
 ec\espol\edu\sqldbcontrol\Cliente.class
 ec\espol\edu\sqldbcontrol\MateriaPrima.class
 ec\espol\edu\sqldbcontrol\PrimaryController.class

@@ -69,8 +69,26 @@ public class ClienteController implements Initializable{
     private TextField direccionField;
     @FXML
     private TextField telefonoField;
+    
+    
+    @FXML
+    private VBox modify;
+    @FXML
+    private TextField nombreFieldM;
+    @FXML
+    private TextField apellidoFieldM;
+    @FXML
+    private TextField cedulaFieldM;
+    @FXML
+    private TextField direccionFieldM;
+    @FXML
+    private TextField telefonoFieldM;
+    @FXML
+    private TextField idFieldM;
+
 
     private ObservableList<Cliente> clienteList;
+    private int filaSeleccionada;
     
 
     @FXML
@@ -115,17 +133,118 @@ public class ClienteController implements Initializable{
         }
 
 
-        updateVisibility(false);
+        updateVisibility(formPane ,false);
+    }
+    
+    @FXML
+    private void seleccionarCliente(){
+        try{
+            filaSeleccionada = clienteTable.getSelectionModel().getSelectedIndex();
+            if (filaSeleccionada >= 0){
+                Cliente clienteSeleccionado = clienteTable.getItems().get(filaSeleccionada);
+
+                idFieldM.setText(Integer.toString(clienteSeleccionado.getCodigo()));
+                nombreFieldM.setText(clienteSeleccionado.getNombre());
+                apellidoFieldM.setText(clienteSeleccionado.getApellido());
+                cedulaFieldM.setText(clienteSeleccionado.getCedula());
+                direccionFieldM.setText(clienteSeleccionado.getDireccionCliente());
+                telefonoFieldM.setText(clienteSeleccionado.getTelefono());
+            }else{
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            }
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Error de selección, error " + e.toString());
+        }
+        
     }
 
+
+    
+    @FXML
+    private void modificarCliente(ActionEvent event) {
+        try {
+            // Tomar los valores actuales de los campos de texto
+            String nombre = nombreFieldM.getText();
+            String apellido = apellidoFieldM.getText();
+            String cedula = cedulaFieldM.getText();
+            String direccion = direccionFieldM.getText();
+            String telefono = telefonoFieldM.getText();
+
+            // Obtener el ID del cliente seleccionado
+            Cliente clienteSeleccionado = clienteTable.getItems().get(filaSeleccionada);
+            int idCliente = clienteSeleccionado.getCodigo();
+
+            // Actualizar los datos en la base de datos
+            String consulta = "UPDATE Cliente SET nombreCliente = ?, apellidoCliente = ?, direccionCliente = ?, telefonoCliente = ?, cedula = ? WHERE idCliente = ?";
+            PreparedStatement ps = Conexion.conectar().prepareStatement(consulta);
+
+            ps.setString(1, nombre);
+            ps.setString(2, apellido);
+            ps.setString(3, direccion);
+            ps.setString(4, telefono);
+            ps.setString(5, cedula);
+            ps.setInt(6, idCliente);
+
+            ps.executeUpdate();
+
+            clienteSeleccionado.setNombre(nombre);
+            clienteSeleccionado.setApellido(apellido);
+            clienteSeleccionado.setCedula(cedula);
+            clienteSeleccionado.setDireccionCliente(direccion);
+            clienteSeleccionado.setTelefono(telefono);
+            
+            clienteTable.refresh(); // Refrescar la tabla para mostrar los cambios
+
+            JOptionPane.showMessageDialog(null, "Modificación exitosa");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se modificó correctamente el Cliente: " + e.toString());
+        }
+        
+        updateVisibility(modify ,false);
+    }
+    
+    
     @FXML
     private void eliminarCliente(ActionEvent event) {
-        formPane.setVisible(false);
+        try {
+            filaSeleccionada = clienteTable.getSelectionModel().getSelectedIndex();
+            
+            if (filaSeleccionada >= 0) {
+                Cliente clienteSeleccionado = clienteTable.getItems().get(filaSeleccionada);
+                int idCliente = clienteSeleccionado.getCodigo();
+            
+                int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro que quieres eliminar el cliente?");
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    String query = "DELETE FROM Cliente WHERE idCliente = ?";
+                    try (PreparedStatement ps = Conexion.conectar().prepareStatement(query)) {
+                        ps.setInt(1, idCliente);
+                        ps.executeUpdate();
+                    }
+                
+                    // Eliminar el cliente de la lista observable
+                    clienteTable.getItems().remove(filaSeleccionada);
+                    JOptionPane.showMessageDialog(null, "Cliente eliminado con éxito");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Eliminación cancelada");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Selecciona un cliente para eliminar.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "No se pudo eliminar el cliente: " + e.toString());
+        }
     }
+    
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        agregarCliente.setOnAction(event -> updateVisibility(true));
+        agregarCliente.setOnAction(event -> updateVisibility(formPane,true));
+        modificarCliente.setOnAction(event -> updateVisibility(modify,true));
+        eliminarCliente.setOnAction(event -> eliminarCliente(event));
+        clienteTable.setOnMouseClicked(event -> seleccionarCliente());
         volver.setOnMouseClicked(event -> {
             try {
                 volverLink(event);
@@ -185,8 +304,8 @@ public class ClienteController implements Initializable{
         App.setRoot("MenuJefe");
     }
     
-    private void updateVisibility(boolean formVisible) {
-    formPane.setVisible(formVisible);
+    private void updateVisibility(VBox caja, boolean formVisible) {
+    caja.setVisible(formVisible);
     agregarCliente.setVisible(!formVisible);
     eliminarCliente.setVisible(!formVisible);
     modificarCliente.setVisible(!formVisible);

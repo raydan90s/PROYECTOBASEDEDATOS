@@ -61,4 +61,32 @@ public class Productos {
         return empleado != null ? empleado.getNombreCompleto() : "";
     }
 
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public void setFechaProduccion(Date fechaProduccion) {
+        this.fechaProduccion = fechaProduccion;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public void setReceta(String receta) {
+        this.receta = receta;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
+
 }
