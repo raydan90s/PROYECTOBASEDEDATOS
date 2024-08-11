@@ -21,10 +21,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class IncidenteController implements Initializable {
 
+    @FXML
+    private Text volver; 
     @FXML
     private TableView<Incidente> incidentesTable;
     @FXML
@@ -51,6 +55,13 @@ public class IncidenteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        volver.setOnMouseClicked(event -> {
+            try {
+                volverLink(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         idIncidenteColumn.setCellValueFactory(new PropertyValueFactory<>("idIncidente"));
         accionTomadaColumn.setCellValueFactory(new PropertyValueFactory<>("accionTomada"));
         descripcionColumn.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -154,6 +165,9 @@ public class IncidenteController implements Initializable {
         } else {
             System.out.println("Por favor, seleccione un incidente para eliminar.");
         }
+    }
+    void volverLink(MouseEvent event) throws IOException {
+        App.setRoot("MenuJefe");
     }
 }
 

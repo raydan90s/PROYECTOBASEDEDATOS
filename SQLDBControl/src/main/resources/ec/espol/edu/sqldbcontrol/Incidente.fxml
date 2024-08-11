@@ -6,9 +6,11 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane id="AnchorPane" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.IncidenteController">
    <children>
+       <Text fx:id="volver" fill="#2b00ff" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volver" underline="true" />
       <Label layoutX="256.0" layoutY="58.0" text="INCIDENTES">
          <font>
             <Font size="24.0" />
