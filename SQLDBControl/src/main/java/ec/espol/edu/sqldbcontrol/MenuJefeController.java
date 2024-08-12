@@ -28,6 +28,7 @@ public class MenuJefeController implements Initializable {
     @FXML
     private Button MostrarInventario;
     @FXML
+<<<<<<< HEAD
     private Button MostrarProductos;
     @FXML
     private Button MostrarCliente;
@@ -37,6 +38,11 @@ public class MenuJefeController implements Initializable {
     private Button mostrarSucursal;
     @FXML
     private Button mostrarSucursal1;
+=======
+    private Button MostrarProveedor;
+    @FXML
+    private Button MostrarIncidente;
+>>>>>>> Empleados-Incidente-Proveedor
 
 
     
@@ -49,6 +55,20 @@ public class MenuJefeController implements Initializable {
         MostrarEmpleados.setOnMouseClicked(event -> {
             try {
                 MostrarEmpleados(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        MostrarIncidente.setOnMouseClicked(event -> {
+            try {
+                MostrarIncidente(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        MostrarProveedor.setOnMouseClicked(event -> {
+            try {
+                MostrarProveedores(event);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -86,6 +106,7 @@ public class MenuJefeController implements Initializable {
     void MostrarInventario(MouseEvent event) throws IOException {
         App.setRoot("Inventario");
     }
+<<<<<<< HEAD
     
     void MostrarProductos(MouseEvent event) throws IOException{
         App.setRoot("Producto");
@@ -108,5 +129,12 @@ public class MenuJefeController implements Initializable {
     @FXML
     private void mostrarsatisfaccion(MouseEvent event) throws IOException {
         App.setRoot("Satisfaccion");
+=======
+    void MostrarProveedores(MouseEvent event) throws IOException {
+        App.setRoot("Proveedor");
+    }
+    void MostrarIncidente(MouseEvent event) throws IOException {
+        App.setRoot("Incidente");
+>>>>>>> Empleados-Incidente-Proveedor
     }
 }
