@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.ProductosController">
+   <children>
+      <Text fx:id="volver" fill="#2b00ff" layoutX="23.0" layoutY="429.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volver" underline="true" />
+      <TableView fx:id="productoTable" layoutX="23.0" layoutY="86.0" prefHeight="300.0" prefWidth="501.0">
+        <columns>
+          <TableColumn fx:id="codigounicocolumn" prefWidth="75.0" text="Código" />
+          <TableColumn fx:id="nombrecolumn" prefWidth="75.0" text="Nombre" />
+          <TableColumn fx:id="cantidadcolumn" prefWidth="75.0" text="Cantidad Disponible" />
+          <TableColumn fx:id="fechaproduccioncolumn" prefWidth="75.0" text="Fecha Producción" />
+          <TableColumn fx:id="preciocolumn" prefWidth="75.0" text="Precio" />
+          <TableColumn fx:id="recetacolumn" prefWidth="75.0" text="Receta" />
+          <TableColumn fx:id="nombrecocinero" prefWidth="75.0" text="Cocinero" />
+            
+            
+        </columns>
+      </TableView>
+      <Label layoutX="23.0" layoutY="31.0" text="PRODUCTOS">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button fx:id="agregarProducto" layoutX="544.0" layoutY="122.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Agregar Producto" />
+      <Button fx:id="eliminarProducto" layoutX="544.0" layoutY="191.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Eliminar Producto" />
+      <Button fx:id="modificarProducto" layoutX="544.0" layoutY="256.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Modificar Producto" />
+      
+      <VBox fx:id="formProducto" layoutX="550.0" layoutY="66.0" prefHeight="335.0" prefWidth="166.0" spacing="10" visible="false">
+          <Label text="Nombre" />
+          <TextField fx:id="nombreField" />
+          <Label text="Cantidad" />
+          <TextField fx:id="cantidadField" />
+          <Label text="Fecha Producción (yyyy-MM-dd)" />
+          <TextField fx:id="fechaField" />
+          <Label text="Precio" />
+          <TextField fx:id="precioField" />
+          <Label text="Receta" />
+          <TextField fx:id="recetaField" />
+          <Label text="Código Cocinero" />
+          <TextField fx:id="cocineroField" />
+          <Button onAction="#handleAddProducto" text="OK" />
+      </VBox>
+      
+      <VBox fx:id="modificar" layoutX="529.0" layoutY="66.0" prefHeight="335.0" prefWidth="166.0" spacing="10" visible="false">
+          <Label text="Id:" />
+          <TextField fx:id="idFieldM" editable="false" style="-fx-background-color: lightgray; -fx-text-fill: blue;" />
+          <Label text="Nombre:" />
+          <TextField fx:id="nombreFieldM" />
+          <Label text="Cantidad:" />
+          <TextField fx:id="cantidadFieldM" />
+          <Label text="Fecha Producción:" />
+          <TextField fx:id="fechaProduccionM" />
+          <Label text="Precio:" />
+          <TextField fx:id="precioFieldM" />
+          <Label text="Receta" />
+          <TextField fx:id="recetaFieldM" />
+          <Label text="CocineroCod" />
+          <TextField fx:id="cocineroFieldM" />
+          <Button onAction="#modificarProducto" text = "OK"/>
+      </VBox>
+      
+   </children>
+</AnchorPane>
