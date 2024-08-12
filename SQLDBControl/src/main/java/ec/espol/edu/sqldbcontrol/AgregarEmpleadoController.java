@@ -38,7 +38,12 @@ public class AgregarEmpleadoController implements Initializable {
 
     private EmpleadosController empleadosController;
     private Integer idEmpleado = null; // Variable para almacenar el ID del empleado
+<<<<<<< HEAD
 
+=======
+    
+    
+>>>>>>> PEDIDO-CAJA-INVENTARIO
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ObservableList<Sucursal> sucursales = FXCollections.observableArrayList(obtenerSucursalesDesdeBD());
