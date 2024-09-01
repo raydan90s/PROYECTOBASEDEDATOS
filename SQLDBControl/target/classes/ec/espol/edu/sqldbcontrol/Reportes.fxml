@@ -1,11 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.ReportesController">
-    
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.ReportesController">
+   <children>
+      <Text layoutX="257.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reportes">
+         <font>
+            <Font name="Serif Regular" size="24.0" />
+         </font>
+      </Text>
+      <Button fx:id="mpd" layoutX="48.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#rp_MateriaPrimaD" text="Materia Prima Disponible">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
+      <Button fx:id="pps" layoutX="379.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#rp_PedidosPorSucursal" prefHeight="29.0" prefWidth="151.0" text="Pedidas por Sucursal">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
+      <Button fx:id="vpe" layoutX="48.0" layoutY="101.0" mnemonicParsing="false" onMouseClicked="#rp_VentasPorEmpleado" prefHeight="29.0" prefWidth="163.0" text="Ventas por Empleado">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
+      <Button fx:id="cdp" layoutX="379.0" layoutY="101.0" mnemonicParsing="false" onMouseClicked="#rp_CalifDePedidos" text="Calificacion de Pedidos">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
+      <TableView fx:id="tb_Reportes" layoutX="57.0" layoutY="160.0" prefHeight="200.0" prefWidth="471.0">
+        <columns>
+          <TableColumn id="c1" fx:id="c1" prefWidth="117.0" text="C1" />
+          <TableColumn id="c2" fx:id="c2" prefWidth="111.0" text="C2" />
+            <TableColumn id="c3" fx:id="c3" prefWidth="127.0" text="C3" />
+            <TableColumn id="c4" fx:id="c4" prefWidth="115.0" text="C4" />
+        </columns>
+      </TableView>
+   </children>
 </AnchorPane>

@@ -74,6 +74,10 @@
          </font>
       </Button>
 
-
+      <Button fx:id="reportes" layoutX="219.5" layoutY="369.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="161.0" text="Reportes">
+         <font>
+            <Font name="Lato Light" size="15.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
