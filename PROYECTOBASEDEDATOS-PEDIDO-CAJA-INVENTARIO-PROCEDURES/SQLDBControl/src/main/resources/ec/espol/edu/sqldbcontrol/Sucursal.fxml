@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="470.0" prefWidth="767.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="ec.espol.edu.sqldbcontrol.SucursalController">
+   <children>
+      <Label layoutX="259.0" layoutY="35.0" text="Sucursal">
+         <font>
+            <Font name="Serif Regular" size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tableSucursal" layoutX="14.0" layoutY="82.0" onMouseClicked="#seleccion" prefHeight="302.0" prefWidth="496.0">
+        <columns>
+          <TableColumn fx:id="id" prefWidth="35.0" text="id" />
+          <TableColumn fx:id="nombre" prefWidth="150.0" text="Nombre Sucursal" />
+            <TableColumn fx:id="direccion" prefWidth="94.0" text="Dirección" />
+            <TableColumn fx:id="telefono" prefWidth="65.0" text="Telefono" />
+            <TableColumn fx:id="horario" prefWidth="82.0" text="Horario" />
+            <TableColumn fx:id="id_jefe" prefWidth="69.0" text="Id_Jefe" />
+        </columns>
+      </TableView>
+      <Text fx:id="textSucursal" layoutX="514.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre Sucursal">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textDireccion" layoutX="514.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dirección">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textTelefono" layoutX="514.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Telefono">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textHorario" layoutX="514.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Horario">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textIdjefe" layoutX="514.0" layoutY="358.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Codigo Jefe">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <TextField fx:id="nombreSucursal" layoutX="536.0" layoutY="107.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="direccionSucursal" layoutX="536.0" layoutY="175.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="TelefonoSucursal" layoutX="536.0" layoutY="242.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="horarioSucursal" layoutX="536.0" layoutY="300.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="codigoJefe" layoutX="536.0" layoutY="362.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <Button fx:id="agregarb" layoutX="67.0" layoutY="408.0" mnemonicParsing="false" onMouseClicked="#agregar" text="Agregar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="editarb" layoutX="219.0" layoutY="408.0" mnemonicParsing="false" onMouseClicked="#editar" text="Editar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="borrarb" layoutX="384.0" layoutY="408.0" mnemonicParsing="false" onMouseClicked="#borrar" text="Borrar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="guardarb" layoutX="595.0" layoutY="408.0" mnemonicParsing="false" onMouseClicked="#guardar" text="Guardar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Text fx:id="volver" layoutX="28.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volver" />
+   </children>
+</AnchorPane>
