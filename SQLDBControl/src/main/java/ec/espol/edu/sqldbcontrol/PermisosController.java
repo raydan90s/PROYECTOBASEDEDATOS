@@ -196,13 +196,12 @@ public class PermisosController implements Initializable {
         JOptionPane.YES_NO_OPTION);
 
         if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "call liminarPermiso(?)";
+            String sql = "call EliminarPermiso(?)";
 
             try (Connection conn = Conexion.conectar();
                 CallableStatement cs = conn.prepareCall(sql)) {
             
                 cs.setInt(1, permisoABorrar.getIdPermiso());
-               
                     permisosList.remove(permisoABorrar);
                     tablePermiso.refresh();
                     JOptionPane.showMessageDialog(null, "El permiso ha sido eliminado exitosamente.");
