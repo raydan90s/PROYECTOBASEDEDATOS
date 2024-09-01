@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="481.0" prefWidth="806.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.espol.edu.sqldbcontrol.SatisfaccionController">
+   <children>
+      <Label layoutX="339.0" layoutY="30.0" text="Satisfacción">
+         <font>
+            <Font name="Serif Regular" size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tableSatisfaccion" layoutX="23.0" layoutY="69.0" onMouseClicked="#seleccion" prefHeight="284.0" prefWidth="531.0">
+        <columns>
+          <TableColumn fx:id="id" prefWidth="57.0" text="id" />
+          <TableColumn fx:id="califacion" prefWidth="78.0" text="Calificación" />
+            <TableColumn fx:id="factura" prefWidth="90.0" text="N° Factura" />
+            <TableColumn fx:id="id_Cliente" prefWidth="60.0" text="id_Cliente" />
+            <TableColumn fx:id="id_Producto" prefWidth="75.0" text="id_Producto" />
+            <TableColumn fx:id="id_Sucursal" prefWidth="72.0" text="Id_Sucursal" />
+            <TableColumn fx:id="fecha_evaluacion" prefWidth="93.0" text="Fecha Evaluacion" />
+        </columns>
+      </TableView>
+      <Button layoutX="65.0" layoutY="391.0" mnemonicParsing="false" onMouseClicked="#agregar" text="Agregar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="214.0" layoutY="391.0" mnemonicParsing="false" onMouseClicked="#editar" text="Editar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="384.0" layoutY="391.0" mnemonicParsing="false" onMouseClicked="#borrar" text="Borrar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="guardarid" layoutX="646.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#guardar" text="Guardar">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Button>
+      <Text fx:id="textCalif" layoutX="604.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Calificación">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textFactura" layoutX="604.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Numero Factura">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textCliente" layoutX="604.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Código cliente">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textProducto" layoutX="604.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Código Producto">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="textSucursal" layoutX="604.0" layoutY="303.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Código Sucursal">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <Text fx:id="fecha" layoutX="604.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Fecha Evaluación">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </Text>
+      <TextField fx:id="calif" layoutX="632.0" layoutY="59.0" prefHeight="26.0" prefWidth="144.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="facturat" layoutX="632.0" layoutY="120.0" prefHeight="26.0" prefWidth="144.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="codCliente" layoutX="632.0" layoutY="183.0" prefHeight="26.0" prefWidth="144.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="codProducto" layoutX="636.0" layoutY="248.0" prefHeight="26.0" prefWidth="144.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="CodSucursal" layoutX="637.0" layoutY="306.0" prefHeight="26.0" prefWidth="144.0">
+         <font>
+            <Font name="Serif Regular" size="14.0" />
+         </font>
+      </TextField>
+      <DatePicker fx:id="fechaEvalucion" layoutX="637.0" layoutY="362.0" prefHeight="25.0" prefWidth="144.0" />
+      <Text fx:id="volver" layoutX="32.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volver" />
+   </children>
+</AnchorPane>
