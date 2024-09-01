@@ -6,6 +6,7 @@ package ec.espol.edu.sqldbcontrol;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -173,25 +174,18 @@ public class SucursalController implements Initializable {
         JOptionPane.YES_NO_OPTION);
 
         if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM Sucursal WHERE idSucursal = ?";
+            String sql = "call EliminarSucursal(?)";
 
             try (Connection conn = Conexion.conectar();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+                CallableStatement cs = conn.prepareCall(sql)){
             
-                ps.setInt(1, sucursalABorrar.getIdSucursal());
-            
-                int filasAfectadas = ps.executeUpdate();
-            
-                if (filasAfectadas > 0) {
+                cs.setInt(1, sucursalABorrar.getIdSucursal());
                     sucursalList.remove(sucursalABorrar);
                     tableSucursal.refresh();
                     JOptionPane.showMessageDialog(null, "El permiso ha sido eliminado exitosamente.");
                     limpiar();
                     mostrarIcono(false);
                     sucursalSeleccionada = null;
-                } else {
-                    JOptionPane.showMessageDialog(null, "No se pudo eliminar la sucursal.");
-                }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Error al eliminar la sucursal: " + e.getMessage());
                 e.printStackTrace();
@@ -201,49 +195,52 @@ public class SucursalController implements Initializable {
 
     @FXML
     private void guardar(MouseEvent event) {
-        boolean esNuevo = sucursalSeleccionada == null;
-        String nomb = nombreSucursal.getText();
-        String direcc= direccionSucursal.getText();
-        String telef = TelefonoSucursal.getText();
-        String hora = horarioSucursal.getText();
-        int id_jefe = Integer.parseInt(codigoJefe.getText());
-        String sql;
-        if (!esNuevo) {
-        sql = "UPDATE Sucursal SET nombreSucursal = ?, direccionSucursal = ?, telefono = ?, horarioSucursal = ?, idJefe = ? WHERE idSucursal = ?";
+    boolean esNuevo = sucursalSeleccionada == null;
+    String nomb = nombreSucursal.getText();
+    String direcc = direccionSucursal.getText();
+    String telef = TelefonoSucursal.getText();
+    String hora = horarioSucursal.getText();
+    int id_jefe = Integer.parseInt(codigoJefe.getText());
+    String sql;
+
+    if (!esNuevo) {
+        sql = "{call ActualizarSucursal(?, ?, ?, ?, ?, ?)}";
     } else {
-        sql = "INSERT INTO Sucursal (nombreSucursal, direccionSucursal, telefono, horarioSucursal, idJefe) VALUES (?, ?, ?, ?, ?)";
+        sql = "{call InsertarSucursal(?, ?, ?, ?, ?)}";
     }
 
     try (Connection conn = Conexion.conectar();
-         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-        
-        ps.setString(1, nomb);
-        ps.setString(2, direcc);
-        ps.setString(3, telef);
-        ps.setString(4, hora);
-        ps.setInt(5, id_jefe);
-        
+         CallableStatement cs = conn.prepareCall(sql)) {
+
         if (!esNuevo) {
-            ps.setInt(6, sucursalSeleccionada.getIdSucursal());
+            cs.setInt(1, sucursalSeleccionada.getIdSucursal());    
+            cs.setString(2, nomb);
+            cs.setString(3, direcc);
+            cs.setString(4, telef);
+            cs.setString(5, hora);
+            cs.setInt(6, id_jefe);
+        } else {
+            cs.setString(1, nomb);
+            cs.setString(2, direcc);
+            cs.setString(3, telef);
+            cs.setString(4, hora);
+            cs.setInt(5, id_jefe);
         }
 
-        int affectedRows = ps.executeUpdate();
-
-        if (affectedRows == 0) {
-            throw new SQLException("La operación falló, no se afectaron filas.");
-        }
+        cs.executeUpdate();
 
         if (esNuevo) {
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int idSucursal = generatedKeys.getInt(1);
-                    Sucursal nuevoSucursal = new Sucursal(idSucursal, nomb, direcc,telef, hora, id_jefe);
+            // Obtiene el último ID insertado
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID()")) {
+                if (rs.next()) {
+                    int idSucursal = rs.getInt(1);
+                    Sucursal nuevoSucursal = new Sucursal(idSucursal, nomb, direcc, telef, hora, id_jefe);
                     sucursalList.add(nuevoSucursal);
-                } else {
-                    throw new SQLException("No se pudo obtener el ID del nuevo permiso.");
                 }
             }
         } else {
+            // Actualiza la sucursal seleccionada
             sucursalSeleccionada.setNombreSucursal(nomb);
             sucursalSeleccionada.setDireccionSucursal(direcc);
             sucursalSeleccionada.setTelefono(telef);
@@ -251,15 +248,17 @@ public class SucursalController implements Initializable {
             sucursalSeleccionada.setIdJefe(id_jefe);
             tableSucursal.refresh();
         }
-            JOptionPane.showMessageDialog(null, "Se insertó correctamente la sucursal");
-            limpiar();
-            mostrarIcono(false);
-            recargarTabla();
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "No se insertó correctamente la sucursal " + e.toString());
-        }
-    }
 
+        JOptionPane.showMessageDialog(null, esNuevo ? "Se insertó correctamente la sucursal" : "Se actualizó correctamente");
+        limpiar();
+        mostrarIcono(false);
+        recargarTabla();
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "No se insertó correctamente la sucursal: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
     @FXML
     private void seleccion(MouseEvent event) {
         limpiar();

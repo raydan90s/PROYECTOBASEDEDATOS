@@ -6,6 +6,7 @@ package ec.espol.edu.sqldbcontrol;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -195,25 +196,18 @@ public class PermisosController implements Initializable {
         JOptionPane.YES_NO_OPTION);
 
         if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM Permiso WHERE idPermiso = ?";
+            String sql = "call EliminarPermiso(?)";
 
             try (Connection conn = Conexion.conectar();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+                CallableStatement cs = conn.prepareCall(sql)) {
             
-                ps.setInt(1, permisoABorrar.getIdPermiso());
-            
-                int filasAfectadas = ps.executeUpdate();
-            
-                if (filasAfectadas > 0) {
+                cs.setInt(1, permisoABorrar.getIdPermiso());
                     permisosList.remove(permisoABorrar);
                     tablePermiso.refresh();
                     JOptionPane.showMessageDialog(null, "El permiso ha sido eliminado exitosamente.");
                     limpiar();
                     mostrarIcono(false);
                     permisoSeleccionado = null;
-                } else {
-                    JOptionPane.showMessageDialog(null, "No se pudo eliminar el permiso.");
-                }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Error al eliminar el permiso: " + e.getMessage());
                 e.printStackTrace();
@@ -222,47 +216,57 @@ public class PermisosController implements Initializable {
     }
 
     @FXML
-    private void guardar(MouseEvent event) {
-        boolean esNuevo = permisoSeleccionado == null;
-        String tipot = tipo.getText();
-        Date fechaInicio = Date.valueOf(fecha_inicio.getValue());
-        Date fechfin = Date.valueOf(fechafin.getValue());
-        int codigo = Integer.parseInt( id_empleado.getText());
-        int id_jefe = Integer.parseInt(id_Jefe.getText());
-        String sql;
-        if (!esNuevo) {
-        sql = "UPDATE Permiso SET fechaInicio = ?, fechaFin = ?, tipo = ?, idEmpleado = ?, idJefe = ? WHERE idPermiso = ?";
+ private void guardar(MouseEvent event) {
+    boolean esNuevo = permisoSeleccionado == null;
+    String tipot = tipo.getText().trim();
+    Date fechaInicio = fecha_inicio.getValue() != null ? Date.valueOf(fecha_inicio.getValue()) : null;
+    Date fechfin = fechafin.getValue() != null ? Date.valueOf(fechafin.getValue()) : null;
+    int codigo = id_empleado.getText().isEmpty() ? 0 : Integer.parseInt(id_empleado.getText().trim());
+    int id_jefe = id_Jefe.getText().isEmpty() ? 0 : Integer.parseInt(id_Jefe.getText().trim());
+    // Verifica que las fechas no sean nulas
+    if (fechaInicio == null || fechfin == null) {
+        JOptionPane.showMessageDialog(null, "Las fechas no pueden ser nulas");
+        return;
+    }
+    // Verifica que los IDs no sean cero (o según la lógica de tu aplicación)
+    if (codigo == 0 || id_jefe == 0) {
+        JOptionPane.showMessageDialog(null, "Los IDs de empleado y jefe deben ser válidos");
+        return;
+    }
+    String sql;
+    if (!esNuevo) {
+        sql = "{call ActualizarPermiso(?, ?, ?, ?, ?, ?)}";
     } else {
-        sql = "INSERT INTO Permiso (fechaInicio, fechaFin, tipo, idEmpleado, idJefe) VALUES (?, ?, ?, ?, ?)";
+        sql = "{call InsertarPermiso(?, ?, ?, ?, ?)}";
     }
 
     try (Connection conn = Conexion.conectar();
-         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-        
-        ps.setDate(1, fechaInicio);
-        ps.setDate(2, fechfin);
-        ps.setString(3, tipot);
-        ps.setInt(4, codigo);
-        ps.setInt(5, id_jefe);
-        
+         CallableStatement cs = conn.prepareCall(sql)) {
+
         if (!esNuevo) {
-            ps.setInt(6, permisoSeleccionado.getIdPermiso());
+            cs.setInt(1, permisoSeleccionado.getIdPermiso());
+            cs.setDate(2, fechaInicio);
+            cs.setDate(3, fechfin);
+            cs.setString(4, tipot);
+            cs.setInt(5, codigo);
+            cs.setInt(6, id_jefe);
+        } else {
+            cs.setDate(1, fechaInicio);
+            cs.setDate(2, fechfin);
+            cs.setString(3, tipot);
+            cs.setInt(4, codigo);
+            cs.setInt(5, id_jefe);
         }
 
-        int affectedRows = ps.executeUpdate();
-
-        if (affectedRows == 0) {
-            throw new SQLException("La operación falló, no se afectaron filas.");
-        }
+        cs.execute();
 
         if (esNuevo) {
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int idPermiso = generatedKeys.getInt(1);
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID()")) {
+                if (rs.next()) {
+                    int idPermiso = rs.getInt(1);
                     Permiso nuevoPermiso = new Permiso(idPermiso, tipot, fechfin, fechaInicio, codigo, "", id_jefe);
                     permisosList.add(nuevoPermiso);
-                } else {
-                    throw new SQLException("No se pudo obtener el ID del nuevo permiso.");
                 }
             }
         } else {
@@ -273,14 +277,16 @@ public class PermisosController implements Initializable {
             permisoSeleccionado.setIdJefe(id_jefe);
             tablePermiso.refresh();
         }
-            JOptionPane.showMessageDialog(null, "Se insertó correctamente el Permiso");
-            limpiar();
-            mostrarIcono(false);
-            recargarTabla();
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "No se insertó correctamente el permiso " + e.toString());
-        } 
+        JOptionPane.showMessageDialog(null, esNuevo ? "Se insertó correctamente el Permiso" : "Se actualizó correctamente el Permiso");
+        limpiar();
+        mostrarIcono(false);
+        recargarTabla();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "No se pudo ejecutar la operación: " + e.getMessage() + " (SQLState: " + e.getSQLState() + ", ErrorCode: " + e.getErrorCode() + ")");
+        e.printStackTrace();
     }
+    recargarTabla();
+}
     
     void volverLink(MouseEvent event) throws IOException {
         App.setRoot("MenuJefe");
