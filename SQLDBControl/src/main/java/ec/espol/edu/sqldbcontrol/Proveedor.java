@@ -6,43 +6,6 @@ package ec.espol.edu.sqldbcontrol;
 
 /**
  *
-<<<<<<< HEAD
- * @author Raydan
- */
-public class Proveedor {
-    String nombreProveedor;
-    String apellidoProveedor;
-    int Codigo;
-
-    public Proveedor(int Codigo, String nombreProveedor, String apellidoProveedor) {
-        this.nombreProveedor = nombreProveedor;
-        this.apellidoProveedor = apellidoProveedor;
-        this.Codigo = Codigo;
-    }
-    
-    public Proveedor(String nombreProveedor, String apellidoProveedor){
-        this.nombreProveedor = nombreProveedor;
-        this.apellidoProveedor = apellidoProveedor;
-    }
-    
-
-    public String getNombreEmpleado() {
-        return nombreProveedor;
-    }
-
-    public String getApellidoEmpleado() {
-        return apellidoProveedor;
-    }
-
-    public int getCodigo() {
-        return Codigo;
-    }
-    
-    public String getNombreCompleto() {
-        return nombreProveedor + " " + apellidoProveedor;
-    }
-
-=======
  * @author jkrom
  */
 public class Proveedor {
@@ -99,6 +62,34 @@ public class Proveedor {
     public void setTelefonoProveedor(String telefonoProveedor) {
         this.telefonoProveedor = telefonoProveedor;
     }
+
+    int Codigo;
+
+    public Proveedor(int Codigo, String nombreProveedor, String apellidoProveedor) {
+        this.nombreProveedor = nombreProveedor;
+        this.apellidoProveedor = apellidoProveedor;
+        this.Codigo = Codigo;
+    }
     
->>>>>>> Empleados-Incidente-Proveedor
+    public Proveedor(String nombreProveedor, String apellidoProveedor){
+        this.nombreProveedor = nombreProveedor;
+        this.apellidoProveedor = apellidoProveedor;
+    }
+    
+
+    public String getNombreEmpleado() {
+        return nombreProveedor;
+    }
+
+    public String getApellidoEmpleado() {
+        return apellidoProveedor;
+    }
+
+    public int getCodigo() {
+        return Codigo;
+    }
+    
+    public String getNombreCompleto() {
+        return nombreProveedor + " " + apellidoProveedor;
+    }
 }

@@ -29,6 +29,17 @@ public class Productos {
         
     }
 
+
+    public Productos(int int1, String string, int int2, double double1, Date date, String string2, int int3) {
+        //TODO Auto-generated constructor stub
+    }
+
+    public Productos(int idProducto, String nombreProducto2, int cantidadRealizada, Date fechaProduccion2,
+            double precioProducto, String recetaProducto, int idEmpleado) {
+        //TODO Auto-generated constructor stub
+    }
+
+
     public int getCodigo() {
         return codigo;
     }

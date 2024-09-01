@@ -26,10 +26,17 @@ public class MenuJefeController implements Initializable {
     @FXML
     private Button MostrarEmpleados;
     @FXML
+    private Button MostrarMateriaPrima;
+    @FXML
+    private Button MostrarProveedor;
+    @FXML
+    private Button MostrarIncidente;
+    @FXML
+    private Button MostrarPedido;
+    @FXML
     private Button MostrarInventario;
     @FXML
-<<<<<<< HEAD
-    private Button MostrarProductos;
+    private Button MostrarCaja;
     @FXML
     private Button MostrarCliente;
     @FXML
@@ -37,14 +44,10 @@ public class MenuJefeController implements Initializable {
     @FXML
     private Button mostrarSucursal;
     @FXML
-    private Button mostrarSucursal1;
-=======
-    private Button MostrarProveedor;
+    private Button mostrarSatisfaccion;
     @FXML
-    private Button MostrarIncidente;
->>>>>>> Empleados-Incidente-Proveedor
-
-
+    private Button mostrarProducto;
+    
     
     /**
      * Initializes the controller class.
@@ -52,6 +55,31 @@ public class MenuJefeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        MostrarPermisos.setOnMouseClicked(event -> {
+            try {
+                mostrarpermisos(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        mostrarSucursal.setOnMouseClicked(event -> {
+            try {
+                mostrarsucursal(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        mostrarSatisfaccion.setOnMouseClicked(event -> {
+            try {
+                mostrarsatisfaccion(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+
         MostrarEmpleados.setOnMouseClicked(event -> {
             try {
                 MostrarEmpleados(event);
@@ -74,67 +102,93 @@ public class MenuJefeController implements Initializable {
             }
         });
 
+        MostrarMateriaPrima.setOnMouseClicked(event -> {
+            try {
+                MostrarMateriaPrima(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        MostrarPedido.setOnMouseClicked(event -> {
+            try{
+                MostrarPedido(event);
+            }catch (IOException ex){
+                ex.printStackTrace();
+            }
+        });
         MostrarInventario.setOnMouseClicked(event -> {
-            try {
+            try{
                 MostrarInventario(event);
-            } catch (IOException ex) {
+            }catch (IOException ex){
                 ex.printStackTrace();
             }
         });
-        
-        MostrarProductos.setOnMouseClicked(event -> {
-            try {
-                MostrarProductos(event);
-            } catch (IOException ex) {
+        MostrarCaja.setOnMouseClicked(event -> {
+            try{
+                MostrarCaja(event);
+            }catch (IOException ex){
                 ex.printStackTrace();
             }
         });
-        
+
         MostrarCliente.setOnMouseClicked(event -> {
             try {
                 MostrarCliente(event);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        });        
-        
+        });  
+
+        mostrarProducto.setOnMouseClicked(event -> {
+            try {
+                mostrarproducto(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });    
     }
     void MostrarEmpleados(MouseEvent event) throws IOException {
         App.setRoot("Empleados");
     }
-
-    void MostrarInventario(MouseEvent event) throws IOException {
-        App.setRoot("Inventario");
+    void MostrarMateriaPrima(MouseEvent event) throws IOException {
+        App.setRoot("MateriaPrima");
     }
-<<<<<<< HEAD
-    
-    void MostrarProductos(MouseEvent event) throws IOException{
-        App.setRoot("Producto");
-    }
-    
-    void MostrarCliente(MouseEvent event) throws IOException{
-        App.setRoot("Cliente");
-    }
-
-    @FXML
-    private void mostrarpermisos(MouseEvent event) throws IOException {
-        App.setRoot("Permisos");
-    }
-
-    @FXML
-    private void mostrarsucursal(MouseEvent event) throws IOException {
-        App.setRoot("Sucursal");
-    }
-
-    @FXML
-    private void mostrarsatisfaccion(MouseEvent event) throws IOException {
-        App.setRoot("Satisfaccion");
-=======
     void MostrarProveedores(MouseEvent event) throws IOException {
         App.setRoot("Proveedor");
     }
     void MostrarIncidente(MouseEvent event) throws IOException {
         App.setRoot("Incidente");
->>>>>>> Empleados-Incidente-Proveedor
     }
+    void MostrarPedido(MouseEvent event) throws IOException {
+        App.setRoot("Pedido");
+    }
+    void MostrarInventario(MouseEvent event) throws IOException {
+        App.setRoot("Inventario");
+    }
+    void MostrarCaja(MouseEvent event) throws IOException {
+        App.setRoot("Caja");
+    }
+    void MostrarCliente(MouseEvent event) throws IOException{
+        App.setRoot("Cliente");
+    }
+    @FXML
+    void mostrarpermisos(MouseEvent event) throws IOException{
+        App.setRoot("Permisos");
+    }
+
+    @FXML
+    void mostrarsucursal(MouseEvent event) throws IOException{
+        App.setRoot("Sucursal");
+    }
+
+    @FXML
+    void mostrarsatisfaccion(MouseEvent event) throws IOException{
+        App.setRoot("Satisfaccion");
+    }
+
+    @FXML
+    void mostrarproducto(MouseEvent event) throws IOException{
+        App.setRoot("Producto");
+    }
+
 }
