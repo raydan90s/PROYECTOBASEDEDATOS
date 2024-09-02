@@ -15,9 +15,16 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -129,9 +136,9 @@ public class EmpleadosController implements Initializable {
                         // Determinar qué tipo de empleado es (Mesero o Cocinero) y eliminarlo de la tabla correspondiente
                         String query = "";
                         if (empleadoSeleccionado.getTipoEmpleado().equalsIgnoreCase("Mesero")) {
-                            query = "DELETE FROM Mesero WHERE idEmpleado = ?";
+                            query = "{CALL EliminarMesero(?)}";
                         } else if (empleadoSeleccionado.getTipoEmpleado().equalsIgnoreCase("Cocinero")) {
-                            query = "DELETE FROM Cocinero WHERE idEmpleado = ?";
+                            query = "{CALL EliminarCocinero(?)}";
                         }
 
                         PreparedStatement statement = connection.prepareStatement(query);
@@ -203,11 +210,7 @@ public class EmpleadosController implements Initializable {
 
         Connection connection = Conexion.conectar();
         Statement statement = connection.createStatement();
-        String query = "SELECT idEmpleado,nombreEmpleado, apellidoEmpleado, horarioEmpleado, salarioMesero AS salario, Sucursal.nombreSucursal, 'Mesero' AS tipoEmpleado "
-                + "FROM Mesero JOIN Sucursal ON Mesero.idSucursal = Sucursal.idSucursal "
-                + "UNION "
-                + "SELECT idEmpleado,nombreEmpleado, apellidoEmpleado, horarioEmpleado, salarioCocinero AS salario, Sucursal.nombreSucursal, 'Cocinero' AS tipoEmpleado "
-                + "FROM Cocinero JOIN Sucursal ON Cocinero.idSucursal = Sucursal.idSucursal";
+        String query = "Call ObtenerEmpleados()";
         ResultSet resultSet = statement.executeQuery(query);
 
         while (resultSet.next()) {
@@ -226,6 +229,12 @@ public class EmpleadosController implements Initializable {
         resultSet.close();
         statement.close();
         connection.close();
+
+        empleadosTable.setItems(null); // Forzar actualización
+        empleadosTable.setItems(empleadosList); // Volver a establecer la lista observable en la tabla
+        empleadosTable.refresh(); // Refrescar la tabla manualmente
+
+        System.out.println("Empleados cargados: " + empleadosList.size()); // Debugging
 
         empleadosTable.setItems(null); // Forzar actualización
         empleadosTable.setItems(empleadosList); // Volver a establecer la lista observable en la tabla

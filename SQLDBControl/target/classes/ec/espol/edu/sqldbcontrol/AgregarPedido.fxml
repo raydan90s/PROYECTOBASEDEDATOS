@@ -16,7 +16,7 @@
       <Label layoutX="33.0" layoutY="277.0" text="Producto:" />
       <TextField fx:id="cantidad" layoutX="107.0" layoutY="113.0" />
       <ComboBox fx:id="clientesComboBox" layoutX="113.0" layoutY="232.0" />
-      <ComboBox fx:id="productosComboBox" layoutX="113.0" layoutY="273.0" />
+      <ComboBox fx:id="productosComboBox" layoutX="113.0" layoutY="273.0" prefHeight="25.0" prefWidth="174.0" />
       <Label layoutX="33.0" layoutY="237.0" text="Cliente:" />
       <Button layoutX="184.0" layoutY="308.0" mnemonicParsing="false" onAction="#guardarPedido" text="Guardar" />
       <ComboBox fx:id="cajaComboBox" layoutX="113.0" layoutY="193.0" />

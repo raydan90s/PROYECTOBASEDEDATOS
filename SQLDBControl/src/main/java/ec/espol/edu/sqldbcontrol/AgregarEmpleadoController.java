@@ -76,7 +76,7 @@ public class AgregarEmpleadoController implements Initializable {
         List<Sucursal> sucursales = new ArrayList<>();
         try {
             Connection connection = Conexion.conectar();
-            String query = "SELECT idSucursal, nombreSucursal, direccionSucursal, telefono, horarioSucursal, idJefe FROM Sucursal";
+            String query = "call ObtenerSucursales()";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
@@ -99,6 +99,7 @@ public class AgregarEmpleadoController implements Initializable {
         return sucursales;
     }
 
+    
     @FXML
     private void guardarEmpleado() {
         String nombre = nombreField.getText();
@@ -116,11 +117,9 @@ public class AgregarEmpleadoController implements Initializable {
             if (idEmpleado == null) {
                 // Si idEmpleado es null, se agrega un nuevo empleado
                 if (tipo.equals("Mesero")) {
-                    query = "INSERT INTO Mesero (nombreEmpleado, apellidoEmpleado, horarioEmpleado, salarioMesero, idSucursal, direccionEmpleado) "
-                            + "VALUES (?, ?, ?, ?, ?, ?)";
+                    query = "{CALL InsertarMesero(?, ?, ?, ?, ?, ?)}";
                 } else if (tipo.equals("Cocinero")) {
-                    query = "INSERT INTO Cocinero (nombreEmpleado, apellidoEmpleado, horarioEmpleado, salarioCocinero, idSucursal, direccionEmpleado, asignacionCocinero) "
-                            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    query = "{CALL InsertarCocinero(?, ?, ?, ?, ?, ?, ?)}";
                 }
 
                 PreparedStatement statement = connection.prepareStatement(query);
@@ -142,11 +141,9 @@ public class AgregarEmpleadoController implements Initializable {
             } else {
                 // Si idEmpleado no es null, se actualiza el empleado existente
                 if (tipo.equals("Mesero")) {
-                    query = "UPDATE Mesero SET nombreEmpleado = ?, apellidoEmpleado = ?, horarioEmpleado = ?, salarioMesero = ?, idSucursal = ?, direccionEmpleado = ? "
-                            + "WHERE idEmpleado = ?";
+                    query = "{CALL ActualizarMesero(?, ?, ?, ?, ?, ?, ?)}";
                 } else if (tipo.equals("Cocinero")) {
-                    query = "UPDATE Cocinero SET nombreEmpleado = ?, apellidoEmpleado = ?, horarioEmpleado = ?, salarioCocinero = ?, idSucursal = ?, direccionEmpleado = ?, asignacionCocinero = ? "
-                            + "WHERE idEmpleado = ?";
+                    query = "{CALL ActualizarCocinero(?, ?, ?, ?, ?, ?, ?, ?)}";
                 }
 
                 PreparedStatement statement = connection.prepareStatement(query);

@@ -85,7 +85,7 @@ public class IncidenteController implements Initializable {
 
         Connection connection = Conexion.conectar();
         Statement statement = connection.createStatement();
-        String query = "SELECT idIncidente, accionTomada, descripcion, fechaIncidente, idJefe, idEmpleado FROM Incidente";
+        String query = "call ObtenerIncidentes()";
         ResultSet resultSet = statement.executeQuery(query);
 
         while (resultSet.next()) {
@@ -147,7 +147,7 @@ public class IncidenteController implements Initializable {
         if (selectedIncidente != null) {
             try {
                 Connection connection = Conexion.conectar();
-                String query = "DELETE FROM Incidente WHERE idIncidente = ?";
+                String query = "{CALL EliminarIncidente(?)}";
 
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setInt(1, selectedIncidente.getIdIncidente());

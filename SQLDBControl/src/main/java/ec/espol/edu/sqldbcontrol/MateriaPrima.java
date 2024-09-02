@@ -19,7 +19,6 @@ public class MateriaPrima {
     private int cantidad;
     private int idInventario;
     private int cantidadRestar;
-    private Timestamp fechaAct;
 
     public MateriaPrima(int idMateria, String nombreMateria, Date fechaCaducidad, Date fechaElaboracion, int cantidad) {
         this.idMateria = idMateria;
@@ -75,24 +74,14 @@ public class MateriaPrima {
         this.proveedor = proveedor;
     }
 
-    public MateriaPrima(int idMateria, String nombreMateria, Date fechaCaducidad, Date fechaElaboracion, int cantidad, Timestamp fechaAct, Proveedor proveedor, int idInventario) {
-        this.idMateria = idMateria;
-        this.nombreMateria = nombreMateria;
-        this.fechaCaducidad = fechaCaducidad;
-        this.fechaElaboracion = fechaElaboracion;
-        this.cantidad = cantidad;
-        this.proveedor = proveedor;
-        this.fechaAct = fechaAct;
-        this.idInventario = idInventario;
+    public MateriaPrima(int idMateria2, String nombreMateria2, Date fechaCaducidad2, Date fechaElaboracion2,
+            int cantidad2, Timestamp fechaAct, Proveedor proveedor2, int codigoi) {
+        //TODO Auto-generated constructor stub
     }
 
-    public MateriaPrima(int idMateria, String nombreMateria, Date fechaCaducidad, Date fechaElaboracion, int cantidad, Proveedor proveedor, int idInventario) {
-        this.idMateria = idMateria;
-        this.nombreMateria = nombreMateria;
-        this.fechaCaducidad = fechaCaducidad;
-        this.cantidad = cantidad;
-        this.proveedor = proveedor;
-        this.idInventario = idInventario;
+    public MateriaPrima(int idMateria2, String nombre, Date fechaCSql, Date fechaESql, int cantidad2,
+            Proveedor proveedor2, int idInventario2) {
+        //TODO Auto-generated constructor stub
     }
 
     public void setIdMateria(int idMateria) {
@@ -119,11 +108,7 @@ public class MateriaPrima {
         this.proveedor = proveedor;
     }
 
-    public Timestamp getFechaAct() {
-        return fechaAct;
-    }
-
-
+    
     public String getNombreProveedor() {
         return proveedor != null ? proveedor.getNombreCompleto() : "";
     }

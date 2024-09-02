@@ -21,8 +21,6 @@
             <TableColumn fx:id="fechaElaboracionColumn" prefWidth="131.0" text="Fecha de Elaboracion" />
             <TableColumn fx:id="fechaCaducidadColumn" prefWidth="131.0" text="Fecha de Caducidad" />
             <TableColumn fx:id="proveedorColumn" prefWidth="131.0" text="Proveedor" />
-            <TableColumn fx:id="fechaActColumn" prefWidth="131.0" text="Fecha Actualizacion" />
-            <TableColumn fx:id="idInventario" prefWidth="131.0" text="ID inventario" />
         </columns>
       </TableView>
       <Label layoutX="23.0" layoutY="31.0" text="MATERIA PRIMA">
@@ -47,8 +45,6 @@
           <TextField fx:id="cantidadField" />
           <Label text="IDProveedor " />
           <TextField fx:id="proveedorField" />
-          <Label text="IDInventario" />
-          <TextField fx:id="inventarioField" />
           <Button onAction="#handleAddMateria" text="OK" />
       </VBox>
       
@@ -65,8 +61,6 @@
           <TextField fx:id="cantidadFieldM" />
           <Label text="IDProveedor" />
           <TextField fx:id="idProveedoroFieldM" />
-          <Label text="IDInventario" />
-          <TextField fx:id="idInventarioFieldM" />
           <Button onAction="#modificarMateria" text="OK" />
       </VBox>
       

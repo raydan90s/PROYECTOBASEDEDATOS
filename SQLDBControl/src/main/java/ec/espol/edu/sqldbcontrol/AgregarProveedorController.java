@@ -56,12 +56,10 @@ public class AgregarProveedorController implements Initializable {
 
             if (idProveedor == null) {
                 // Si idProveedor es null, se agrega un nuevo proveedor
-                query = "INSERT INTO Proveedor (nombreProveedor, apellidoProveedor, emailProveedor, telefonoProveedor) "
-                        + "VALUES (?, ?, ?, ?)";
+                query = "{CALL InsertarProveedor(?, ?, ?, ?)}";
             } else {
                 // Si idProveedor no es null, se actualiza el proveedor existente
-                query = "UPDATE Proveedor SET nombreProveedor = ?, apellidoProveedor = ?, emailProveedor = ?, telefonoProveedor = ? "
-                        + "WHERE idProveedor = ?";
+                query = "{CALL ActualizarProveedor(?, ?, ?, ?, ?)}";
             }
 
             PreparedStatement statement = connection.prepareStatement(query);

@@ -12,11 +12,13 @@ public class Inventario {
     private int idInventario;
     private int idJefe;
     private String nombre;
+    private int idProveedor;
 
-    public Inventario(int idInventario, int idJefe, String nombre) {
+    public Inventario(int idInventario, int idJefe, String nombre, int idProveedor) {
         this.idInventario = idInventario;
         this.idJefe = idJefe;
         this.nombre = nombre;
+        this.idProveedor=idProveedor;
     }
 
     public int getIdInventario() {
@@ -29,6 +31,10 @@ public class Inventario {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public int getIdProveedor() {
+        return idProveedor;
     }
     
 }

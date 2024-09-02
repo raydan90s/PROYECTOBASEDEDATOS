@@ -82,7 +82,7 @@ public class ProveedorController implements Initializable {
 
         Connection connection = Conexion.conectar();
         Statement statement = connection.createStatement();
-        String query = "SELECT idProveedor, nombreProveedor, apellidoProveedor, emailProveedor, telefonoProveedor FROM Proveedor";
+        String query = "call ObtenerProveedores()";
         ResultSet resultSet = statement.executeQuery(query);
 
         while (resultSet.next()) {
@@ -135,7 +135,7 @@ public class ProveedorController implements Initializable {
                     try {
                         Connection connection = Conexion.conectar();
 
-                        String query = "DELETE FROM Proveedor WHERE idProveedor = ?";
+                        String query = "{CALL EliminarProveedor(?)}";
                         PreparedStatement statement = connection.prepareStatement(query);
                         statement.setInt(1, proveedorSeleccionado.getId());
 

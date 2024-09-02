@@ -7,8 +7,8 @@ package ec.espol.edu.sqldbcontrol;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -159,50 +159,63 @@ public class CajaController implements Initializable {
         }
     }
 
-    @FXML
-    private void eliminarCaja() {
-        Caja cajaSeleccionada = cajasTable.getSelectionModel().getSelectedItem();
+@FXML
+private void eliminarCaja() {
+    // Obtén la caja seleccionada en la tabla
+    Caja cajaSeleccionada = cajasTable.getSelectionModel().getSelectedItem();
 
-        if (cajaSeleccionada != null) {
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Confirmación de Eliminación");
-            confirmAlert.setHeaderText("Advertencia");
-            confirmAlert.setContentText("¿Estás seguro de que quieres eliminar esta caja?");
+    if (cajaSeleccionada != null) {
+        // Muestra un cuadro de diálogo de confirmación
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirmación de Eliminación");
+        confirmAlert.setHeaderText("Advertencia");
+        confirmAlert.setContentText("¿Deseas eliminar esta caja?");
+        
+        // Espera la respuesta del usuario
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try (Connection connection = Conexion.conectar(); // Asegúrate de que 'Conexion.conectar()' devuelve una conexión válida
+                     CallableStatement statement = connection.prepareCall("{CALL eliminarCaja(?)}")) {
 
-            confirmAlert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    String query = "DELETE FROM Caja WHERE idCaja = ?";
-                    try (Connection connection = Conexion.conectar();
-                         PreparedStatement statement = connection.prepareStatement(query)) {
+                    // Configura el parámetro del procedimiento almacenado
+                    statement.setInt(1, cajaSeleccionada.getIdCaja());
 
-                        statement.setInt(1, cajaSeleccionada.getIdCaja());
-                        int rowsAffected = statement.executeUpdate();
+                    // Ejecuta el procedimiento almacenado
+                    int rowsAffected = statement.executeUpdate();
 
-                        if (rowsAffected > 0) {
-                            cajaList.remove(cajaSeleccionada);
-                            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                            successAlert.setTitle("Caja Eliminada");
-                            successAlert.setHeaderText(null);
-                            successAlert.setContentText("La caja ha sido eliminada exitosamente.");
-                            successAlert.showAndWait();
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setTitle("Error");
-                        errorAlert.setHeaderText(null);
-                        errorAlert.setContentText("Hubo un error al intentar eliminar la caja.");
-                        errorAlert.showAndWait();
-                    }
+                    // Verifica si la eliminación fue exitosa
+              
+                        // Elimina la caja de la vista
+                        cajasTable.getItems().remove(cajaSeleccionada);
+
+                        // Muestra un mensaje de éxito
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setTitle("Caja Eliminada");
+                        successAlert.setHeaderText(null);
+                        successAlert.setContentText("La caja ha sido eliminada exitosamente.");
+                        successAlert.showAndWait();
+                    
+                } catch (SQLException e) {
+                    e.printStackTrace(); // Imprime el error en la consola para depuración
+                    // Muestra un mensaje de error en caso de excepción
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Error");
+                    errorAlert.setHeaderText(null);
+                    errorAlert.setContentText("Hubo un error al intentar eliminar la caja: " + e.getMessage());
+                    errorAlert.showAndWait();
                 }
-            });
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Advertencia");
-            alert.setHeaderText(null);
-            alert.setContentText("Por favor, selecciona una caja para eliminar.");
-            alert.showAndWait();
-        }
+            }
+        });
+    } else {
+        // Muestra una advertencia si no se ha seleccionado ninguna caja
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Advertencia");
+        alert.setHeaderText(null);
+        alert.setContentText("Por favor, selecciona una caja para eliminar.");
+        alert.showAndWait();
     }
+}
+
+
 }
 

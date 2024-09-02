@@ -92,4 +92,10 @@ public class Proveedor {
     public String getNombreCompleto() {
         return nombreProveedor + " " + apellidoProveedor;
     }
+
+    @Override
+    public String toString() {
+        return nombreProveedor + " "+ apellidoProveedor;
+    }
+    
 }

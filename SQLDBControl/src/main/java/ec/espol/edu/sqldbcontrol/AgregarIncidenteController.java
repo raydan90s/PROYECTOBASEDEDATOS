@@ -60,7 +60,7 @@ public class AgregarIncidenteController {
         if (isModification) {
             try {
                 Connection connection = Conexion.conectar();
-                String query = "UPDATE Incidente SET accionTomada = ?, descripcion = ?, fechaIncidente = ?, idJefe = ?, idEmpleado = ? WHERE idIncidente = ?";
+                String query = "{CALL ActualizarIncidente(?, ?, ?, ?, ?, ?)}";
 
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setString(1, accionTomada);
@@ -93,7 +93,7 @@ public class AgregarIncidenteController {
             // Código para agregar un nuevo incidente
             try {
                 Connection connection = Conexion.conectar();
-                String query = "INSERT INTO Incidente (accionTomada, descripcion, fechaIncidente, idJefe, idEmpleado) VALUES (?, ?, ?, ?, ?)";
+                String query = "{CALL InsertarIncidente(?, ?, ?, ?, ?)}";
 
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setString(1, accionTomada);

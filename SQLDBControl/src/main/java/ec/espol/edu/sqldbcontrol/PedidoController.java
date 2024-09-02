@@ -6,8 +6,8 @@ package ec.espol.edu.sqldbcontrol;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -112,59 +112,55 @@ public class PedidoController implements Initializable {
             alert.showAndWait();
         }
     }
-    @FXML
-    private void eliminarPedido() {
-        Pedido pedidoSeleccionado = pedidosTable.getSelectionModel().getSelectedItem();
+@FXML
+private void eliminarPedido() {
+    Pedido pedidoSeleccionado = pedidosTable.getSelectionModel().getSelectedItem();
 
-        if (pedidoSeleccionado != null) {
-            // Mostrar alerta de confirmación
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Confirmación de Eliminación");
-            confirmAlert.setHeaderText("Advertencia");
-            confirmAlert.setContentText("Si eliminas este pedido, es posible que se elimine también información relacionada. ¿Deseas continuar?");
+    if (pedidoSeleccionado != null) {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirmación de Eliminación");
+        confirmAlert.setHeaderText("Advertencia");
+        confirmAlert.setContentText("Si eliminas este pedido, es posible que se elimine también información relacionada. ¿Deseas continuar?");
 
-            // Si el usuario confirma, proceder con la eliminación
-            confirmAlert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    try {
-                        Connection connection = Conexion.conectar();
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try (Connection connection = Conexion.conectar()) {
+                    // Llamada al procedimiento almacenado `eliminarPedido`
+                    CallableStatement statement = connection.prepareCall("{CALL eliminarPedido(?)}");
+                    statement.setInt(1, pedidoSeleccionado.getIdPedido());
 
-                        // Eliminar el pedido de la tabla correspondiente
-                        String query = "DELETE FROM Pedido WHERE idPedido = ?";
-                        PreparedStatement statement = connection.prepareStatement(query);
-                        statement.setInt(1, pedidoSeleccionado.getIdPedido());
+                    int rowsAffected = statement.executeUpdate();
 
-                        int rowsAffected = statement.executeUpdate();
+                        // Actualizar la lista de pedidos y la tabla
+                        loadPedidos();
 
-                        if (rowsAffected > 0) {
-                            pedidosTable.getItems().remove(pedidoSeleccionado);
-                            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                            successAlert.setTitle("Pedido Eliminado");
-                            successAlert.setHeaderText(null);
-                            successAlert.setContentText("El pedido ha sido eliminado exitosamente.");
-                            successAlert.showAndWait();
-                        }
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setTitle("Pedido Eliminado");
+                        successAlert.setHeaderText(null);
+                        successAlert.setContentText("El pedido ha sido eliminado exitosamente.");
+                        successAlert.showAndWait();
+                    
 
-                        statement.close();
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setTitle("Error");
-                        errorAlert.setHeaderText(null);
-                        errorAlert.setContentText("Hubo un error al intentar eliminar el pedido.");
-                        errorAlert.showAndWait();
-                    }
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Error");
+                    errorAlert.setHeaderText(null);
+                    errorAlert.setContentText("Hubo un error al intentar eliminar el pedido.");
+                    errorAlert.showAndWait();
                 }
-            });
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Advertencia");
-            alert.setHeaderText(null);
-            alert.setContentText("Por favor, selecciona un pedido para eliminar.");
-            alert.showAndWait();
-        }
+            }
+        });
+    } else {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Advertencia");
+        alert.setHeaderText(null);
+        alert.setContentText("Por favor, selecciona un pedido para eliminar.");
+        alert.showAndWait();
     }
+}
+
 
 
     
