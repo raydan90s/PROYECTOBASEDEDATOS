@@ -4,6 +4,7 @@
  */
 package ec.espol.edu.sqldbcontrol;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,6 +24,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 
 /**
  * FXML Controller class
@@ -49,10 +51,19 @@ public class ReportesController implements Initializable {
     private TableColumn<String, String> c3;
     @FXML
     private TableColumn<String, String> c4;
+    @FXML
+    private Text volver;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tb_Reportes.setVisible(false);
+                volver.setOnMouseClicked(event -> {
+            try {
+                volverLink(event);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
     }    
 
     @FXML
@@ -256,6 +267,9 @@ public class ReportesController implements Initializable {
     
         // Asignar los datos al TableView
         tb_Reportes.setItems(data);
+    }
+        void volverLink(MouseEvent event) throws IOException {
+        App.setRoot("MenuJefe");
     }
     
 }

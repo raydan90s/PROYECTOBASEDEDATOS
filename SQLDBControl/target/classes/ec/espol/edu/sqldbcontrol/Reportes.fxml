@@ -42,5 +42,6 @@
             <TableColumn id="c4" fx:id="c4" prefWidth="115.0" text="C4" />
         </columns>
       </TableView>
+      <Text fx:id="volver" layoutX="25.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volver" />
    </children>
 </AnchorPane>
