@@ -15,9 +15,16 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -222,6 +229,12 @@ public class EmpleadosController implements Initializable {
         resultSet.close();
         statement.close();
         connection.close();
+
+        empleadosTable.setItems(null); // Forzar actualización
+        empleadosTable.setItems(empleadosList); // Volver a establecer la lista observable en la tabla
+        empleadosTable.refresh(); // Refrescar la tabla manualmente
+
+        System.out.println("Empleados cargados: " + empleadosList.size()); // Debugging
 
         empleadosTable.setItems(null); // Forzar actualización
         empleadosTable.setItems(empleadosList); // Volver a establecer la lista observable en la tabla

@@ -2,6 +2,7 @@ package ec.espol.edu.sqldbcontrol;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,9 +12,16 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -25,12 +33,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Stage;
 
 public class InventarioController implements Initializable {
 
     @FXML
     private Text volver;
-    @FXML
+
     private TableView<Inventario> inventarioTable;
     @FXML
     private TableColumn<Inventario, Integer> idInventario;
@@ -109,56 +118,55 @@ public class InventarioController implements Initializable {
         }
     }
 
-    @FXML
-    private void eliminarInventario() {
-        Inventario inventarioSeleccionado = inventarioTable.getSelectionModel().getSelectedItem();
+@FXML
+private void eliminarInventario() {
+    Inventario inventarioSeleccionado = inventarioTable.getSelectionModel().getSelectedItem();
 
-        if (inventarioSeleccionado != null) {
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Confirmación de Eliminación");
-            confirmAlert.setHeaderText("Advertencia");
-            confirmAlert.setContentText("¿Deseas eliminar este inventario?");
+    if (inventarioSeleccionado != null) {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirmación de Eliminación");
+        confirmAlert.setHeaderText("Advertencia");
+        confirmAlert.setContentText("¿Deseas eliminar este inventario?");
 
-            confirmAlert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    try {
-                        Connection connection = Conexion.conectar();
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try (Connection connection = Conexion.conectar()) {
+                    // Llamada al procedimiento almacenado `eliminarInventario`
+                    CallableStatement statement = connection.prepareCall("{CALL eliminarInventario(?)}");
+                    statement.setInt(1, inventarioSeleccionado.getIdInventario());
 
-                        String query = "DELETE FROM Inventario WHERE idInventario = ?";
-                        PreparedStatement statement = connection.prepareStatement(query);
-                        statement.setInt(1, inventarioSeleccionado.getIdInventario());
+                    statement.executeUpdate();
 
-                        int rowsAffected = statement.executeUpdate();
+                    // Asegúrate de que el procedimiento se ejecutó correctamente
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.setTitle("Inventario Eliminado");
+                    successAlert.setHeaderText(null);
+                    successAlert.setContentText("El inventario ha sido eliminado exitosamente.");
+                    successAlert.showAndWait();
 
-                        if (rowsAffected > 0) {
-                            inventarioTable.getItems().remove(inventarioSeleccionado);
-                            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                            successAlert.setTitle("Inventario Eliminado");
-                            successAlert.setHeaderText(null);
-                            successAlert.setContentText("El inventario ha sido eliminado exitosamente.");
-                            successAlert.showAndWait();
-                        }
+                    // Actualizar la vista después de la eliminación
+                    inventarioTable.getItems().remove(inventarioSeleccionado);
 
-                        statement.close();
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setTitle("Error");
-                        errorAlert.setHeaderText(null);
-                        errorAlert.setContentText("Hubo un error al intentar eliminar el inventario.");
-                        errorAlert.showAndWait();
-                    }
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Error");
+                    errorAlert.setHeaderText("Error SQL");
+                    errorAlert.setContentText("Hubo un error al intentar eliminar el inventario: " + e.getMessage());
+                    errorAlert.showAndWait();
                 }
-            });
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Advertencia");
-            alert.setHeaderText(null);
-            alert.setContentText("Por favor, selecciona un inventario para eliminar.");
-            alert.showAndWait();
-        }
+            }
+        });
+    } else {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Advertencia");
+        alert.setHeaderText(null);
+        alert.setContentText("Por favor, selecciona un inventario para eliminar.");
+        alert.showAndWait();
     }
+}
+
 
     void volverLink(MouseEvent event) throws IOException {
         App.setRoot("MenuJefe");
@@ -176,8 +184,9 @@ public class InventarioController implements Initializable {
             int id = resultSet.getInt("idInventario");
             int idJefe = resultSet.getInt("idJefe");
             String nombre = resultSet.getString("nombre");
+            int idProveedor = resultSet.getInt("idProveedor");
 
-            Inventario inventario = new Inventario(id, idJefe, nombre);
+            Inventario inventario = new Inventario(id, idJefe, nombre, idProveedor);
             inventarioList.add(inventario);
         }
 

@@ -6,6 +6,7 @@ package ec.espol.edu.sqldbcontrol;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +16,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -26,14 +25,11 @@ import javafx.event.ActionEvent;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 
-
-
-
 /**
  *
  * @author Raydan
  */
-public class ClienteController implements Initializable{
+public class ClienteController implements Initializable {
     @FXML
     private Text volver;
     @FXML
@@ -68,8 +64,7 @@ public class ClienteController implements Initializable{
     private TextField direccionField;
     @FXML
     private TextField telefonoField;
-    
-    
+
     @FXML
     private VBox modify;
     @FXML
@@ -85,11 +80,10 @@ public class ClienteController implements Initializable{
     @FXML
     private TextField idFieldM;
 
-
     private ObservableList<Cliente> clienteList;
     private int filaSeleccionada;
-    
 
+    // PROCEDURE PARA AGREGAR CLIENTE
     @FXML
     private void handleAddClient(ActionEvent event) {
         String nombre = nombreField.getText();
@@ -97,73 +91,83 @@ public class ClienteController implements Initializable{
         String cedula = cedulaField.getText();
         String direccion = direccionField.getText();
         String telefono = telefonoField.getText();
-        
-        String consulta = "Insert into Cliente(nombreCliente, apellidoCliente, direccionCliente, telefonoCliente, cedula) "
-                + "values(?, ?, ?, ?, ?)";
-        try{
-            PreparedStatement ps = Conexion.conectar().prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
-            
-            ps.setString(1, nombre);
-            ps.setString(2, apellido);
-            ps.setString(3, direccion);
-            ps.setString(4, telefono);
-            ps.setString(5, cedula);
-            
-            ps.executeUpdate();
-                        
-            ResultSet generatedKeys = ps.getGeneratedKeys();
+
+        // Llamada al procedimiento almacenado
+        String consulta = "{CALL sp_insertarCliente(?, ?, ?, ?, ?)}";
+
+        try {
+            // Preparar la llamada al procedimiento almacenado
+            CallableStatement cs = Conexion.conectar().prepareCall(consulta);
+
+            cs.setString(1, nombre);
+            cs.setString(2, apellido);
+            cs.setString(3, direccion);
+            cs.setString(4, telefono);
+            cs.setString(5, cedula);
+
+            cs.execute();
+
+            // Obtener el ID generado (si es necesario, esto depende de la estructura de tu
+            // procedimiento)
+            ResultSet generatedKeys = cs.getGeneratedKeys();
             int idCliente = 0;
-            
             if (generatedKeys.next()) {
-            idCliente = generatedKeys.getInt(1);
-        }
-        
+                idCliente = generatedKeys.getInt(1);
+            }
+
             // Crear el nuevo cliente con el ID recuperado
             Cliente nuevoCliente = new Cliente(idCliente, nombre, apellido, cedula, direccion, telefono);
-        
+
             // Añadir el nuevo cliente a la lista observable
             clienteList.add(nuevoCliente);
-            
+
             JOptionPane.showMessageDialog(null, "Se insertó correctamente el Cliente");
 
-            
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "No se insertó correctamente el Cliente " + e.toString());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "No se insertó correctamente el Cliente: " + e.getMessage());
         }
 
-
-        updateVisibility(formPane ,false);
+        updateVisibility(formPane, false);
     }
-    
+
+    // PROCEDURE PARA ELIMINAR CLIENTE
     @FXML
-    private void seleccionarCliente(){
-        try{
+    private void eliminarCliente(ActionEvent event) {
+        try {
             filaSeleccionada = clienteTable.getSelectionModel().getSelectedIndex();
-            if (filaSeleccionada >= 0){
-                Cliente clienteSeleccionado = clienteTable.getItems().get(filaSeleccionada);
 
-                idFieldM.setText(Integer.toString(clienteSeleccionado.getCodigo()));
-                nombreFieldM.setText(clienteSeleccionado.getNombre());
-                apellidoFieldM.setText(clienteSeleccionado.getApellido());
-                cedulaFieldM.setText(clienteSeleccionado.getCedula());
-                direccionFieldM.setText(clienteSeleccionado.getDireccionCliente());
-                telefonoFieldM.setText(clienteSeleccionado.getTelefono());
-            }else{
-                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
+            if (filaSeleccionada >= 0) {
+                Cliente clienteSeleccionado = clienteTable.getItems().get(filaSeleccionada);
+                int idCliente = clienteSeleccionado.getCodigo();
+
+                int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro que quieres eliminar el cliente?");
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    // Llamada al procedimiento almacenado
+                    String query = "{CALL sp_eliminarCliente(?)}";
+
+                    try (CallableStatement cs = Conexion.conectar().prepareCall(query)) {
+                        cs.setInt(1, idCliente);
+                        cs.execute();
+                    }
+
+                    // Eliminar el cliente de la lista observable
+                    clienteTable.getItems().remove(filaSeleccionada);
+                    JOptionPane.showMessageDialog(null, "Cliente eliminado con éxito");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Eliminación cancelada");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Selecciona un cliente para eliminar.");
             }
-            
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error de selección, error " + e.toString());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo eliminar el cliente: " + e.getMessage());
         }
-        
     }
 
-
-    
+    // PROCEDURE PARA MODIFICAR CLIENTE
     @FXML
     private void modificarCliente(ActionEvent event) {
         try {
-            // Tomar los valores actuales de los campos de texto
             String nombre = nombreFieldM.getText();
             String apellido = apellidoFieldM.getText();
             String cedula = cedulaFieldM.getText();
@@ -174,74 +178,65 @@ public class ClienteController implements Initializable{
             Cliente clienteSeleccionado = clienteTable.getItems().get(filaSeleccionada);
             int idCliente = clienteSeleccionado.getCodigo();
 
-            // Actualizar los datos en la base de datos
-            String consulta = "UPDATE Cliente SET nombreCliente = ?, apellidoCliente = ?, direccionCliente = ?, telefonoCliente = ?, cedula = ? WHERE idCliente = ?";
-            PreparedStatement ps = Conexion.conectar().prepareStatement(consulta);
+            // Llamada al procedimiento almacenado
+            String consulta = "{CALL sp_modificarCliente(?, ?, ?, ?, ?, ?)}";
 
-            ps.setString(1, nombre);
-            ps.setString(2, apellido);
-            ps.setString(3, direccion);
-            ps.setString(4, telefono);
-            ps.setString(5, cedula);
-            ps.setInt(6, idCliente);
+            try (CallableStatement cs = Conexion.conectar().prepareCall(consulta)) {
+                cs.setInt(1, idCliente);
+                cs.setString(2, nombre);
+                cs.setString(3, apellido);
+                cs.setString(4, direccion);
+                cs.setString(5, telefono);
+                cs.setString(6, cedula);
 
-            ps.executeUpdate();
+                cs.execute();
+            }
 
+            // Actualizar los datos del cliente en la lista observable
             clienteSeleccionado.setNombre(nombre);
             clienteSeleccionado.setApellido(apellido);
             clienteSeleccionado.setCedula(cedula);
             clienteSeleccionado.setDireccionCliente(direccion);
             clienteSeleccionado.setTelefono(telefono);
-            
+
             clienteTable.refresh(); // Refrescar la tabla para mostrar los cambios
 
             JOptionPane.showMessageDialog(null, "Modificación exitosa");
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "No se modificó correctamente el Cliente: " + e.toString());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "No se modificó correctamente el Cliente: " + e.getMessage());
         }
-        
-        updateVisibility(modify ,false);
+
+        updateVisibility(modify, false);
     }
-    
-    
+
     @FXML
-    private void eliminarCliente(ActionEvent event) {
+    private void seleccionarCliente() {
         try {
             filaSeleccionada = clienteTable.getSelectionModel().getSelectedIndex();
-            
             if (filaSeleccionada >= 0) {
                 Cliente clienteSeleccionado = clienteTable.getItems().get(filaSeleccionada);
-                int idCliente = clienteSeleccionado.getCodigo();
-            
-                int respuesta = JOptionPane.showConfirmDialog(null, "¿Estás seguro que quieres eliminar el cliente?");
-                if (respuesta == JOptionPane.YES_OPTION) {
-                    String query = "DELETE FROM Cliente WHERE idCliente = ?";
-                    try (PreparedStatement ps = Conexion.conectar().prepareStatement(query)) {
-                        ps.setInt(1, idCliente);
-                        ps.executeUpdate();
-                    }
-                
-                    // Eliminar el cliente de la lista observable
-                    clienteTable.getItems().remove(filaSeleccionada);
-                    JOptionPane.showMessageDialog(null, "Cliente eliminado con éxito");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Eliminación cancelada");
-                }
+
+                idFieldM.setText(Integer.toString(clienteSeleccionado.getCodigo()));
+                nombreFieldM.setText(clienteSeleccionado.getNombre());
+                apellidoFieldM.setText(clienteSeleccionado.getApellido());
+                cedulaFieldM.setText(clienteSeleccionado.getCedula());
+                direccionFieldM.setText(clienteSeleccionado.getDireccionCliente());
+                telefonoFieldM.setText(clienteSeleccionado.getTelefono());
             } else {
-                JOptionPane.showMessageDialog(null, "Selecciona un cliente para eliminar.");
+                JOptionPane.showMessageDialog(null, "Fila no seleccionada");
             }
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "No se pudo eliminar el cliente: " + e.toString());
+            JOptionPane.showMessageDialog(null, "Error de selección, error " + e.toString());
         }
+
     }
-    
-    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        agregarCliente.setOnAction(event -> updateVisibility(formPane,true));
-        modificarCliente.setOnAction(event -> updateVisibility(modify,true));
+        agregarCliente.setOnAction(event -> updateVisibility(formPane, true));
+        modificarCliente.setOnAction(event -> updateVisibility(modify, true));
         eliminarCliente.setOnAction(event -> eliminarCliente(event));
         clienteTable.setOnMouseClicked(event -> seleccionarCliente());
         volver.setOnMouseClicked(event -> {
@@ -251,13 +246,13 @@ public class ClienteController implements Initializable{
                 ex.printStackTrace();
             }
         });
-        
+
         codigoColumn.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         nombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         apellidoColumn.setCellValueFactory(new PropertyValueFactory<>("apellido"));
         cedulaColumn.setCellValueFactory(new PropertyValueFactory<>("cedula"));
         direccionColumn.setCellValueFactory(new PropertyValueFactory<>("direccionCliente"));
-        telefonoColumn.setCellValueFactory(new PropertyValueFactory<>("telefono")); 
+        telefonoColumn.setCellValueFactory(new PropertyValueFactory<>("telefono"));
 
         clienteList = FXCollections.observableArrayList();
 
@@ -269,19 +264,17 @@ public class ClienteController implements Initializable{
 
         clienteTable.setItems(clienteList);
     }
-    
-    
+
     private void loadEmpleados() throws SQLException {
         Connection connection = Conexion.conectar();
         Statement statement = connection.createStatement();
         String query = "SELECT idCliente, nombreCliente, apellidoCliente, direccionCliente, telefonoCliente, cedula "
                 + "FROM Cliente";
 
-                
         ResultSet resultSet = statement.executeQuery(query);
 
         while (resultSet.next()) {
-            
+
             int codigo = resultSet.getInt("idCliente");
             String nombre = resultSet.getString("nombreCliente");
             String apellido = resultSet.getString("apellidoCliente");
@@ -298,17 +291,15 @@ public class ClienteController implements Initializable{
         connection.close();
     }
 
-    
     void volverLink(MouseEvent event) throws IOException {
         App.setRoot("MenuJefe");
     }
-    
-    private void updateVisibility(VBox caja, boolean formVisible) {
-    caja.setVisible(formVisible);
-    agregarCliente.setVisible(!formVisible);
-    eliminarCliente.setVisible(!formVisible);
-    modificarCliente.setVisible(!formVisible);
-}
 
+    private void updateVisibility(VBox caja, boolean formVisible) {
+        caja.setVisible(formVisible);
+        agregarCliente.setVisible(!formVisible);
+        eliminarCliente.setVisible(!formVisible);
+        modificarCliente.setVisible(!formVisible);
+    }
 
 }

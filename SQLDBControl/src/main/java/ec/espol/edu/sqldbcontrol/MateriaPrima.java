@@ -5,6 +5,7 @@
 package ec.espol.edu.sqldbcontrol;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -71,6 +72,16 @@ public class MateriaPrima {
         this.fechaElaboracion = fechaElaboracion;
         this.cantidad = cantidad;
         this.proveedor = proveedor;
+    }
+
+    public MateriaPrima(int idMateria2, String nombreMateria2, Date fechaCaducidad2, Date fechaElaboracion2,
+            int cantidad2, Timestamp fechaAct, Proveedor proveedor2, int codigoi) {
+        //TODO Auto-generated constructor stub
+    }
+
+    public MateriaPrima(int idMateria2, String nombre, Date fechaCSql, Date fechaESql, int cantidad2,
+            Proveedor proveedor2, int idInventario2) {
+        //TODO Auto-generated constructor stub
     }
 
     public void setIdMateria(int idMateria) {

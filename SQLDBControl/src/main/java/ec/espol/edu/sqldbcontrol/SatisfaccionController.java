@@ -6,6 +6,7 @@ package ec.espol.edu.sqldbcontrol;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -179,105 +180,110 @@ public class SatisfaccionController implements Initializable {
     private void borrar(MouseEvent event) {
         Satisfaccion satisfaccionABorrar = tableSatisfaccion.getSelectionModel().getSelectedItem();
         if (satisfaccionABorrar == null) {
-            JOptionPane.showMessageDialog(null, "Por favor, seleccione una satisfaccion para eliminar.");
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una satisfacción para eliminar.");
             return;
         }
 
         int confirmacion = JOptionPane.showConfirmDialog(null, 
-        "¿Está seguro de que desea eliminar este permiso?", 
+        "¿Está seguro de que desea eliminar esta satisfacción?", 
         "Confirmar eliminación", 
         JOptionPane.YES_NO_OPTION);
 
         if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM Satisfaccion WHERE idSatisfaccion = ?";
-
+            String sql = "{call EliminarSatisfaccion(?)}"; // Nota la sintaxis para llamar al procedimiento
+        
             try (Connection conn = Conexion.conectar();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+                CallableStatement cs = conn.prepareCall(sql)) {
+        
+                cs.setInt(1, satisfaccionABorrar.getIdSatisfaccion());
+        
+                boolean hasResults = cs.execute();
             
-                ps.setInt(1, satisfaccionABorrar.getIdSatisfaccion());
+            // You can check the result or affected rows if needed, but for a procedure, it might be optional
             
-                int filasAfectadas = ps.executeUpdate();
-            
-                if (filasAfectadas > 0) {
-                    satisfaccionList.remove(satisfaccionABorrar);
-                    tableSatisfaccion.refresh();
-                    JOptionPane.showMessageDialog(null, "La satisfaccion ha sido eliminado exitosamente.");
-                    limpiar();
-                    mostrarIcono(false);
-                    satisfaccionSeleccionado = null;
-                } else {
-                    JOptionPane.showMessageDialog(null, "No se pudo eliminar la satisfaccion.");
-                }
+                satisfaccionList.remove(satisfaccionABorrar);
+                tableSatisfaccion.refresh();
+                JOptionPane.showMessageDialog(null, "La satisfacción ha sido eliminada exitosamente.");
+                limpiar();
+                mostrarIcono(false);
+                satisfaccionSeleccionado = null;
+        
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al eliminar la satisfaccion: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Error al eliminar la satisfacción: " + e.getMessage());
                 e.printStackTrace();
             }
         }
     }
 
-    @FXML
-    private void guardar(MouseEvent event) {
-        boolean esNuevo = satisfaccionSeleccionado == null;
-        int factu = Integer.parseInt(facturat.getText());
-        int Calificacion = Integer.parseInt(calif.getText());
-        int CodiCliente = Integer.parseInt(codCliente.getText());
-        int codigoProducto = Integer.parseInt( codProducto.getText());
-        int codigoSucursal = Integer.parseInt(CodSucursal.getText());
-        Date fecheva = Date.valueOf(fechaEvalucion.getValue());
-        
-        String sql;
-        if (!esNuevo) {
-        sql = "UPDATE Satisfaccion SET calificacionCliente = ?, numFactura = ?, idCliente = ?, idProducto = ?, idSucursal = ?, fechaEvaluacion = ? WHERE idSatisfaccion = ?";
+     @FXML
+private void guardar(MouseEvent event){
+    boolean esNuevo = satisfaccionSeleccionado == null;
+    int calificacion = Integer.parseInt(calif.getText());
+    int numFactura = Integer.parseInt(facturat.getText()); // Cambiado a String porque en el SP es CHAR(5)
+    int codiCliente = Integer.parseInt(codCliente.getText());
+    int codigoProducto = Integer.parseInt(codProducto.getText());
+    int codigoSucursal = Integer.parseInt(CodSucursal.getText());
+    Date fechaEva = Date.valueOf(fechaEvalucion.getValue());
+    
+    String sql;
+    if (!esNuevo) {
+        sql = "{call ActualizarSatisfaccion (?, ?, ?, ?, ?, ?, ?)}";
     } else {
-        sql = "INSERT INTO Satisfaccion (calificacionCliente, numFactura, idCliente, idProducto, idSucursal, fechaEvaluacion) VALUES (?, ?, ?, ?, ?, ?)";    }
-
+        sql = "{call InsertarSatisfaccion (?, ?, ?, ?, ?, ?)}";
+    }
+    
     try (Connection conn = Conexion.conectar();
-         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-        
-        ps.setInt(1, Calificacion);
-        ps.setInt(2, factu);
-        ps.setInt(3, CodiCliente);
-        ps.setInt(4, codigoProducto);
-        ps.setInt(5, codigoSucursal);
-        ps.setDate(6, fecheva);
-        
+         CallableStatement cs = conn.prepareCall(sql)) {
+ 
         if (!esNuevo) {
-            ps.setInt(7, satisfaccionSeleccionado.getIdSatisfaccion());
+            cs.setInt(1, satisfaccionSeleccionado.getIdSatisfaccion());
+            cs.setInt(2, calificacion);
+            cs.setInt(3, numFactura);
+            cs.setInt(4, codiCliente);
+            cs.setInt(5, codigoProducto);
+            cs.setInt(6, codigoSucursal);
+            cs.setDate(7, fechaEva);
+        } else {
+            cs.setInt(1, calificacion);
+            cs.setInt(2, numFactura);
+            cs.setInt(3, codiCliente);
+            cs.setInt(4, codigoProducto);
+            cs.setInt(5, codigoSucursal);
+            cs.setDate(6, fechaEva);
         }
-
-        int affectedRows = ps.executeUpdate();
-
-        if (affectedRows == 0) {
-            throw new SQLException("La operación falló, no se afectaron filas.");
-        }
-
+        
+        cs.execute();
+        
         if (esNuevo) {
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int idSatisfaccion = generatedKeys.getInt(1);
-                    Satisfaccion nuevoSatisfaccion = new Satisfaccion(idSatisfaccion, Calificacion,factu, CodiCliente, codigoProducto, codigoSucursal, fecheva);
+            // Para obtener el ID generado, necesitamos hacer una consulta adicional
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID()")) {
+                if (rs.next()) {
+                    int idSatisfaccion = rs.getInt(1);
+                    Satisfaccion nuevoSatisfaccion = new Satisfaccion(idSatisfaccion, calificacion, numFactura, codiCliente, codigoProducto, codigoSucursal, fechaEva);
                     satisfaccionList.add(nuevoSatisfaccion);
-                } else {
-                    throw new SQLException("No se pudo obtener el ID de la nuevo Satisfaccion.");
                 }
             }
         } else {
-            satisfaccionSeleccionado.setCalificacionCliente(Calificacion);
-            satisfaccionSeleccionado.setNumFactura(factu);
-            satisfaccionSeleccionado.setIdCliente(CodiCliente);
+            satisfaccionSeleccionado.setCalificacionCliente(calificacion);
+            satisfaccionSeleccionado.setNumFactura(numFactura);
+            satisfaccionSeleccionado.setIdCliente(codiCliente);
             satisfaccionSeleccionado.setIdProducto(codigoProducto);
             satisfaccionSeleccionado.setIdSucursal(codigoSucursal);
-            satisfaccionSeleccionado.setFechaEvaluacion(fecheva);
+            satisfaccionSeleccionado.setFechaEvaluacion(fechaEva);
             tableSatisfaccion.refresh();
         }
-            JOptionPane.showMessageDialog(null, "Se insertó correctamente la Satisfaccion");
-            limpiar();
-            mostrarIcono(false);
-            recargarTabla();
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "No se insertó correctamente el permiso " + e.toString());
-        } 
+        
+        JOptionPane.showMessageDialog(null, esNuevo ? "Se insertó correctamente la Satisfacción" : "Se actualizó correctamente la Satisfacción");
+        limpiar();
+        mostrarIcono(false);
+        recargarTabla();
+    } catch(Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al " + (esNuevo ? "insertar" : "actualizar") + " la Satisfacción: " + e.getMessage());
+        e.printStackTrace();
     }
+    recargarTabla();
+}
     
     void volverLink(MouseEvent event) throws IOException {
         App.setRoot("MenuJefe");
@@ -295,19 +301,19 @@ public class SatisfaccionController implements Initializable {
     }
     
     void mostrarIcono(boolean valor){
-    textCalif.setVisible(valor);
-    textFactura.setVisible(valor);
-    textCliente.setVisible(valor);
-    textProducto.setVisible(valor);
-    textSucursal.setVisible(valor);
-    fecha.setVisible(valor);
-    calif.setVisible(valor);
-    codCliente.setVisible(valor);
-    codProducto.setVisible(valor);
-    CodSucursal.setVisible(valor);
-    fechaEvalucion.setVisible(valor);
-    guardarid.setVisible(valor);
-    facturat.setVisible(valor);
+        textCalif.setVisible(valor);
+        textFactura.setVisible(valor);
+        textCliente.setVisible(valor);
+        textProducto.setVisible(valor);
+        textSucursal.setVisible(valor);
+        fecha.setVisible(valor);
+        calif.setVisible(valor);
+        codCliente.setVisible(valor);
+        codProducto.setVisible(valor);
+        CodSucursal.setVisible(valor);
+        fechaEvalucion.setVisible(valor);
+        guardarid.setVisible(valor);
+        facturat.setVisible(valor);
     }
     
     void limpiar(){

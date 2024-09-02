@@ -5,6 +5,7 @@
 package ec.espol.edu.sqldbcontrol;
 
 import java.net.URL;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -104,85 +105,76 @@ public class AgregarCajaController implements Initializable {
         }
     }
 
-    @FXML
-    private void guardarCaja() {
-        try {
-            float gasto = Float.parseFloat(gastos.getText());
-            float sobrante = Float.parseFloat(sobrantes.getText());
-            float valorCajaChiquitas = Float.parseFloat(valorCajaChiquita.getText());
-            LocalDate fechaRegistro = registro.getValue();
-            String horaRegistro = hora.getText();
-            
-            if (fechaRegistro == null || horaRegistro.isEmpty()) {
-                // Manejo de error si la fecha o la hora no se ha proporcionado
-                throw new IllegalArgumentException("Fecha y hora deben estar completas");
-            }
+@FXML
+private void guardarCaja() {
+    try {
+        float gasto = Float.parseFloat(gastos.getText());
+        float sobrante = Float.parseFloat(sobrantes.getText());
+        float valorCajaChiquitas = Float.parseFloat(valorCajaChiquita.getText());
+        LocalDate fechaRegistro = registro.getValue();
+        String horaRegistro = hora.getText()+ ":00";
 
-            LocalDateTime fechaHora = LocalDateTime.of(fechaRegistro, LocalTime.parse(horaRegistro, DateTimeFormatter.ofPattern("HH:mm:ss")));
-
-            try (Connection connection = Conexion.conectar()) {
-                String query;
-
-                if (idCaja == null) {
-                    query = "INSERT INTO Caja (gastos, sobrantes, valorCajaChiquita, fechaRegistro, idSucursal) "
-                            + "VALUES (?, ?, ?, ?, ?)";
-
-                    try (PreparedStatement statement = connection.prepareStatement(query)) {
-                        statement.setFloat(1, gasto);
-                        statement.setFloat(2, sobrante);
-                        statement.setFloat(3, valorCajaChiquitas);
-                        statement.setTimestamp(4, Timestamp.valueOf(fechaHora));
-                        Sucursal sucursalSeleccionada = sucursalesComboBox.getValue();
-                        statement.setInt(5, sucursalSeleccionada.getIdSucursal());
-                        statement.executeUpdate();
-                    }
-
-                } else {
-                    query = "UPDATE Caja SET gastos = ?, sobrantes = ?, valorCajaChiquita = ?, fechaRegistro = ?, idSucursal = ? "
-                            + "WHERE idCaja = ?";
-
-                    try (PreparedStatement statement = connection.prepareStatement(query)) {
-                        statement.setFloat(1, gasto);
-                        statement.setFloat(2, sobrante);
-                        statement.setFloat(3, valorCajaChiquitas);
-                        statement.setTimestamp(4, Timestamp.valueOf(fechaHora));
-                        Sucursal sucursalSeleccionada = sucursalesComboBox.getValue();
-                        statement.setInt(5, sucursalSeleccionada.getIdSucursal());
-                        statement.setInt(6, idCaja);
-
-                        statement.executeUpdate();
-                    }
-                }
-
-                cajaController.loadCajas();
-
-                Stage stage = (Stage) gastos.getScene().getWindow();
-                stage.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Hubo un error al guardar la caja.");
-                alert.showAndWait();
-            }
-
-        } catch (NumberFormatException e) {
-            // Manejo de error si no se puede convertir a float
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Por favor, ingrese valores numéricos válidos.");
-            alert.showAndWait();
-        } catch (IllegalArgumentException e) {
-            // Manejo de error si la fecha u hora están vacías
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        if (fechaRegistro == null || horaRegistro.isEmpty()) {
+            throw new IllegalArgumentException("Fecha y hora deben estar completas");
         }
+
+        LocalDateTime fechaHora = LocalDateTime.of(fechaRegistro, LocalTime.parse(horaRegistro, DateTimeFormatter.ofPattern("HH:mm:ss")));
+        Sucursal sucursalSeleccionada = sucursalesComboBox.getValue();
+
+        try (Connection connection = Conexion.conectar()) {
+            CallableStatement statement;
+
+            if (idCaja == null) {
+                // Llamada al procedimiento almacenado `insertarCaja`
+                statement = connection.prepareCall("{CALL insertarCaja(?, ?, ?, ?, ?)}");
+                statement.setFloat(1, gasto);
+                statement.setFloat(2, sobrante);
+                statement.setFloat(3, valorCajaChiquitas);
+                statement.setTimestamp(4, Timestamp.valueOf(fechaHora));
+                statement.setInt(5, sucursalSeleccionada.getIdSucursal());
+            } else {
+                // Llamada al procedimiento almacenado `actualizarCaja`
+                statement = connection.prepareCall("{CALL actualizarCaja(?, ?, ?, ?, ?, ?)}");
+                statement.setInt(1, idCaja);
+                statement.setFloat(2, gasto);
+                statement.setFloat(3, sobrante);
+                statement.setFloat(4, valorCajaChiquitas);
+                statement.setTimestamp(5, Timestamp.valueOf(fechaHora));
+                statement.setInt(6, sucursalSeleccionada.getIdSucursal());
+            }
+
+            statement.execute();
+            statement.close();
+
+            cajaController.loadCajas();
+
+            Stage stage = (Stage) gastos.getScene().getWindow();
+            stage.close();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Éxito");
+            alert.setHeaderText(null);
+            alert.setContentText("Caja guardada exitosamente.");
+            alert.showAndWait();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            mostrarError("Hubo un error al guardar la caja.");
+        }
+
+    } catch (NumberFormatException e) {
+        mostrarError("Por favor, ingrese valores numéricos válidos.");
+    } catch (IllegalArgumentException e) {
+        mostrarError(e.getMessage());
+    }
+}
+
+    private void mostrarError(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 
     @FXML
